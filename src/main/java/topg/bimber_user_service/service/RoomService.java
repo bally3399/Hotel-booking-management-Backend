@@ -14,7 +14,7 @@ public interface RoomService {
    List<RoomResponse> findAllRoomsByHotelId(Long hotelId);
    boolean isRoomAvailable(Long id);
    List<RoomResponse> findAllAvailableHotelRooms(Long hotelId);
-//    RoomResponse deactivateRoomByHotelId(Long hotelId, Long roomId);
+    RoomResponse deactivateRoomByHotelId(Long hotelId, Long roomId);
     RoomResponse activateRoomByHotelId(Long hotelId, Long roomId);
 //    List<RoomResponse> filterHotelRoomByType(Long hotelId, String type);
 //    List<RoomResponse> filterByPriceAndState(BigDecimal minPrice, BigDecimal maxPrice, String state);

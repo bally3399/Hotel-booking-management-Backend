@@ -134,6 +134,28 @@ public class RoomServiceImpl implements RoomService {
         )).collect(Collectors.toList());
     }
 
+    @Override
+    public RoomResponse deactivateRoomByHotelId(Long hotelId, Long roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NoSuchElementException("Room not found"));
+
+        if (!room.getHotel().getId().equals(hotelId)) {
+            throw new IllegalArgumentException("Room does not belong to the specified hotel");
+        }
+
+        room.setAvailable(false);
+        Room updatedRoom = roomRepository.save(room);
+
+        return new RoomResponse(
+                updatedRoom.getId(),
+                updatedRoom.getRoomType(),
+                updatedRoom.getPrice(),
+                updatedRoom.isAvailable(),
+                updatedRoom.getPictures()
+        );
+    }
+
+
 
     @Override
     public RoomResponse activateRoomByHotelId(Long hotelId, Long roomId) {
@@ -191,25 +213,7 @@ public class RoomServiceImpl implements RoomService {
 
 
 
-//    @Override
-//    public RoomResponse deactivateRoomByHotelId(Long hotelId, Long roomId) {
-//        Room room = roomRepository.findByHotelIdAndId(hotelId, roomId)
-//                .orElseThrow(() -> new UserNotFoundInDb("Room with ID " + roomId + " not found in hotel with ID " + hotelId));
 
-//        room.setAvailable(false);
-//        room = roomRepository.save(room);
-//        List<String> pictureUrls = room.getPictures().stream()
-//                .map(RoomPicture::getFileName)
-//                .toList();
-//
-//        return new RoomResponse(
-//                room.getId(),
-//                room.getRoomType(),
-//                room.getPrice(),
-//                room.isAvailable(),
-//                pictureUrls
-//        );
-//    }
 
 
 

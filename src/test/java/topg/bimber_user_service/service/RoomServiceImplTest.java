@@ -282,6 +282,33 @@ class RoomServiceImplTest {
     }
 
 
+    @Test
+    @DisplayName("Should deactivate a room for a given hotel")
+    public void shouldDeactivateRoomForHotel() {
+        Hotel hotel = new Hotel();
+        hotel.setName("Test Hotel");
+        hotel.setLocation("Test Location");
+        hotel.setState(State.LAGOS);
+        hotel.setDescription("A test hotel");
+        hotel = hotelRepository.save(hotel);
+        Long hotelId = hotel.getId();
+
+        Room room = new Room();
+        room.setHotel(hotel);
+        room.setRoomType(RoomType.SINGLE);
+        room.setAvailable(true);
+        room.setPrice(BigDecimal.valueOf(50000.0));
+        room = roomRepository.save(room);
+        Long roomId = room.getId();
+
+        RoomResponse response = roomServiceImpl.deactivateRoomByHotelId(hotelId, roomId);
+
+        assertNotNull(response);
+        assertEquals(roomId, response.getId());
+        assertFalse(response.isAvailable());
+    }
+
+
 
 
 }
