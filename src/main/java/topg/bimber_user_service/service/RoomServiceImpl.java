@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,9 +73,80 @@ public class RoomServiceImpl implements RoomService {
                 savedRoom.getRoomType(),
                 savedRoom.getPrice(),
                 savedRoom.isAvailable(),
-                savedPictures.stream().map(RoomPicture::getFileName).collect(Collectors.toList())
-        );
+                        savedPictures
+
+                );
     }
+
+    @Override
+    public String deleteRoomById(Long id) {
+        Optional<Room> roomOptional = roomRepository.findById(id);
+
+        if (roomOptional.isPresent()) {
+            roomRepository.deleteById(id);
+            return "Room deleted successfully";
+        } else {
+            return "Room not found";
+        }
+    }
+
+    @Override
+    public List<RoomResponse> findAllRoomsByHotelId(Long hotelId) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
+
+        List<Room> rooms = roomRepository.findByHotelId(hotelId);
+
+        return rooms.stream().map(room -> new RoomResponse(
+                room.getId(),
+                room.getRoomType(),
+                room.getPrice(),
+                room.isAvailable(),
+                room.getPictures()
+        )).collect(Collectors.toList());
+    }
+
+
+
+
+
+    @Override
+    public boolean isRoomAvailable(Long id) {
+        return roomRepository.findById(id)
+                .map(Room::isAvailable)
+                .orElse(false);
+    }
+
+    @Override
+    public RoomResponse activateRoomByHotelId(Long hotelId, Long roomId) {
+        Optional<Room> roomOptional = roomRepository.findById(roomId);
+
+        if (roomOptional.isPresent()) {
+            Room room = roomOptional.get();
+
+            if (!room.getHotel().getId().equals(hotelId)) {
+                throw new IllegalArgumentException("Room does not belong to the specified hotel");
+            }
+
+            room.setAvailable(true);
+            Room updatedRoom = roomRepository.save(room);
+
+            List<RoomPicture> pictures = updatedRoom.getPictures();
+
+
+            return new RoomResponse(
+                    updatedRoom.getId(),
+                    updatedRoom.getRoomType(),
+                    updatedRoom.getPrice(),
+                    updatedRoom.isAvailable(),
+                    pictures
+            );
+        } else {
+            throw new NoSuchElementException("Room not found");
+        }
+    }
+
+
 
 
 //    @Override
@@ -98,44 +171,9 @@ public class RoomServiceImpl implements RoomService {
 //    }
 //
 
-//    @Override
-//    @Transactional
-//    public String deleteRoomById(Long id) {
-//        Room room = roomRepository.findById(id)
-//                .orElseThrow(() -> new UserNotFoundInDb("Room not found"));
-//        roomRepository.delete(room);
-//        return "You have successfully deleted room with id:  " + room.getId();
-//    }
 
 
-//    @Override
-//    public List<RoomResponse> findAllRoomsByHotelId(Long hotelId) {
-//        List<Room> rooms = roomRepository.findByHotelId(hotelId);
-//        return rooms.stream()
-//                .map(room-> {
-//                    List<String> pictureUrls = room.getPictures().stream()
-//                            .map(RoomPicture::getFileName)
-//                            .toList();
-//
-//                    return new RoomResponse(
-//                            room.getId(),
-//                            room.getRoomType(),
-//                            room.getPrice(),
-//                            room.isAvailable(),
-//                            pictureUrls
-//                    );
-//
-//
-//                }).collect(Collectors.toList());
-//    }
-//
-//
-//    @Override
-//    public boolean isRoomAvailable(Long id) {
-//        return roomRepository.findById(id)
-//                .map(Room::isAvailable)
-//                .orElseThrow(() -> new UserNotFoundInDb("Room with ID " + id + " not found"));
-//    }
+
 
 
 
