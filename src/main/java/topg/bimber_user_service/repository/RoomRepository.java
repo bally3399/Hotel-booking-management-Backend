@@ -21,6 +21,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     List<Room> findByHotelIdAndAvailable(Long hotelId, boolean available);
 
+
     Optional<Room> findByHotelIdAndId(Long hotelId, Long roomId);
 
     List<Room> findByHotelIdAndRoomType(Long hotelId, RoomType roomType);

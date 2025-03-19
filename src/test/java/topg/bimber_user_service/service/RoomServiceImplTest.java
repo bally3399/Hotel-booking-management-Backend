@@ -207,8 +207,6 @@ class RoomServiceImplTest {
     }
 
 
-
-
     @Test
     @DisplayName("Should throw exception if room does not exist")
     public void shouldThrowExceptionIfRoomDoesNotExist() {
@@ -247,6 +245,40 @@ class RoomServiceImplTest {
         assertEquals(2, rooms.size());
         assertEquals(RoomType.SINGLE, rooms.get(0).getRoomType());
         assertEquals(RoomType.DOUBLE, rooms.get(1).getRoomType());
+    }
+
+
+    @Test
+    @DisplayName("Should return only available rooms for a given hotel")
+    public void shouldReturnOnlyAvailableRoomsForHotel() {
+        Hotel hotel = new Hotel();
+        hotel.setName("Sample Hotel");
+        hotel.setLocation("Test Location");
+        hotel.setState(State.LAGOS);
+        hotel.setDescription("A sample test hotel");
+        hotel = hotelRepository.save(hotel);
+        Long hotelId = hotel.getId();
+
+        Room availableRoom = new Room();
+        availableRoom.setHotel(hotel);
+        availableRoom.setRoomType(RoomType.SINGLE);
+        availableRoom.setAvailable(true);
+        availableRoom.setPrice(BigDecimal.valueOf(50000.0));
+        roomRepository.save(availableRoom);
+
+        Room unavailableRoom = new Room();
+        unavailableRoom.setHotel(hotel);
+        unavailableRoom.setRoomType(RoomType.DOUBLE);
+        unavailableRoom.setAvailable(false);
+        unavailableRoom.setPrice(BigDecimal.valueOf(80000.0));
+        roomRepository.save(unavailableRoom);
+
+        List<RoomResponse> availableRooms = roomServiceImpl.findAllAvailableHotelRooms(hotelId);
+
+        assertNotNull(availableRooms);
+        assertEquals(1, availableRooms.size());
+        assertTrue(availableRooms.get(0).isAvailable());
+        assertEquals(RoomType.SINGLE, availableRooms.get(0).getRoomType());
     }
 
 

@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import topg.bimber_user_service.dto.requests.RoomRequest;
 import topg.bimber_user_service.dto.responses.RoomResponse;
+import topg.bimber_user_service.exceptions.RoomNotAvailableException;
 import topg.bimber_user_service.exceptions.UserNotFoundInDb;
 import topg.bimber_user_service.models.*;
 import topg.bimber_user_service.repository.HotelRepository;
@@ -118,33 +119,43 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomResponse activateRoomByHotelId(Long hotelId, Long roomId) {
-        Optional<Room> roomOptional = roomRepository.findById(roomId);
+    public List<RoomResponse> findAllAvailableHotelRooms(Long hotelId) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
 
-        if (roomOptional.isPresent()) {
-            Room room = roomOptional.get();
+        List<Room> availableRooms = roomRepository.findByHotelIdAndAvailable(hotelId, true);
 
-            if (!room.getHotel().getId().equals(hotelId)) {
-                throw new IllegalArgumentException("Room does not belong to the specified hotel");
-            }
-
-            room.setAvailable(true);
-            Room updatedRoom = roomRepository.save(room);
-
-            List<RoomPicture> pictures = updatedRoom.getPictures();
-
-
-            return new RoomResponse(
-                    updatedRoom.getId(),
-                    updatedRoom.getRoomType(),
-                    updatedRoom.getPrice(),
-                    updatedRoom.isAvailable(),
-                    pictures
-            );
-        } else {
-            throw new NoSuchElementException("Room not found");
-        }
+        return availableRooms.stream().map(room -> new RoomResponse(
+                room.getId(),
+                room.getRoomType(),
+                room.getPrice(),
+                room.isAvailable(),
+                room.getPictures()
+        )).collect(Collectors.toList());
     }
+
+
+    @Override
+    public RoomResponse activateRoomByHotelId(Long hotelId, Long roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomNotAvailableException("Room not found"));
+
+        if (!room.getHotel().getId().equals(hotelId)) {
+            throw new IllegalArgumentException("Room does not belong to the specified hotel");
+        }
+
+        room.setAvailable(true);
+        Room updatedRoom = roomRepository.save(room);
+
+        return new RoomResponse(
+                updatedRoom.getId(),
+                updatedRoom.getRoomType(),
+                updatedRoom.getPrice(),
+                updatedRoom.isAvailable(),
+                updatedRoom.getPictures()
+        );
+    }
+
 
 
 
@@ -178,23 +189,6 @@ public class RoomServiceImpl implements RoomService {
 
 
 
-//    @Override
-//    public List<RoomResponse> findAllAvailableHotelRooms(Long hotelId) {
-//        List<Room> availableRooms = roomRepository.findByHotelIdAndAvailable(hotelId, true);
-//        return availableRooms.stream()
-//                .map(room-> {
-//                    List<String> pictureUrls = room.getPictures().stream()
-//                            .map(RoomPicture::getFileName)
-//                            .toList();
-//                    return new RoomResponse(
-//                            room.getId(),
-//                            room.getRoomType(),
-//                            room.getPrice(),
-//                            room.isAvailable(),
-//                            pictureUrls
-//                    );
-//                }).collect(Collectors.toList());
-//    }
 
 
 //    @Override
