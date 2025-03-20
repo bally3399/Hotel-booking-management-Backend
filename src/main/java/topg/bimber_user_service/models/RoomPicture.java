@@ -25,5 +25,17 @@ public class RoomPicture {
     private byte[] data;
 
     public RoomPicture(String fileName, String fileType, Room room, byte[] data) {
+        this.fileName = fileName;
+        this.fileType = fileType;
+        this.room = room;
+        this.data = data;
+    }
+
+
+    public String getUrl() {
+        return "/api/room-pictures/" + this.id;
     }
 }
+
+
+

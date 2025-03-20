@@ -28,10 +28,15 @@ public class Room {
     @ManyToOne
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
+    private State state;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings;
+//
+//    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<RoomPicture> pictures;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RoomPicture> pictures;
+
 }
