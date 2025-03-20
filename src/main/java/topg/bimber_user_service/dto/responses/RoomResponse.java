@@ -4,6 +4,8 @@ package topg.bimber_user_service.dto.responses;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import topg.bimber_user_service.models.Hotel;
+import topg.bimber_user_service.models.Room;
 import topg.bimber_user_service.models.RoomPicture;
 import topg.bimber_user_service.models.RoomType;
 
@@ -20,6 +22,7 @@ public class RoomResponse{
        private BigDecimal price;
        private boolean isAvailable;
        private List<RoomPicture> pictureUrls;
+       private Hotel hotel;
 
 
 

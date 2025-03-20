@@ -46,7 +46,7 @@ public class RoomServiceImpl implements RoomService {
                 .hotel(hotel)
                 .roomType(roomRequest.getRoomType())
                 .price(roomRequest.getPrice())
-                .available(roomRequest.getAvailable())
+                .available(roomRequest.getIsAvailable())
                 .build();
 
         Room savedRoom = roomRepository.save(room);
@@ -70,14 +70,30 @@ public class RoomServiceImpl implements RoomService {
 
         return new RoomResponse
                 (
-                savedRoom.getId(),
-                savedRoom.getRoomType(),
-                savedRoom.getPrice(),
-                savedRoom.isAvailable(),
-                        savedPictures
+                        savedRoom.getId(),
+                        savedRoom.getRoomType(),
+                        savedRoom.getPrice(),
+                        savedRoom.isAvailable(),
+                        savedPictures,
+                        savedRoom.getHotel()
 
                 );
     }
+
+    @Override
+    public String editRoomById(Long id, RoomRequest roomRequest) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotAvailableException("Room not found"));
+
+        room.setRoomType(roomRequest.getRoomType());
+        room.setPrice(roomRequest.getPrice());
+        room.setAvailable(roomRequest.getIsAvailable());
+
+        roomRepository.save(room);
+
+        return "Room updated successfully";
+    }
+
 
     @Override
     public String deleteRoomById(Long id) {
@@ -103,12 +119,10 @@ public class RoomServiceImpl implements RoomService {
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
-                room.getPictures()
+                room.getPictures(),
+                room.getHotel()
         )).collect(Collectors.toList());
     }
-
-
-
 
 
     @Override
@@ -130,7 +144,8 @@ public class RoomServiceImpl implements RoomService {
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
-                room.getPictures()
+                room.getPictures(),
+                room.getHotel()
         )).collect(Collectors.toList());
     }
 
@@ -151,10 +166,10 @@ public class RoomServiceImpl implements RoomService {
                 updatedRoom.getRoomType(),
                 updatedRoom.getPrice(),
                 updatedRoom.isAvailable(),
-                updatedRoom.getPictures()
+                updatedRoom.getPictures(),
+                updatedRoom.getHotel()
         );
     }
-
 
 
     @Override
@@ -174,110 +189,49 @@ public class RoomServiceImpl implements RoomService {
                 updatedRoom.getRoomType(),
                 updatedRoom.getPrice(),
                 updatedRoom.isAvailable(),
-                updatedRoom.getPictures()
+                updatedRoom.getPictures(),
+                updatedRoom.getHotel()
         );
     }
 
+    @Override
+    public List<RoomResponse> filterHotelRoomByType(Long hotelId, String type) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
 
+        RoomType roomType;
+        try {
+            roomType = RoomType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid room type");
+        }
 
+        List<Room> filteredRooms = roomRepository.findByHotelIdAndRoomType(hotelId, roomType);
 
+        return filteredRooms.stream().map(room -> new RoomResponse(
+                room.getId(),
+                room.getRoomType(),
+                room.getPrice(),
+                room.isAvailable(),
+                room.getPictures(),
+                room.getHotel()
+        )).collect(Collectors.toList());
+    }
 
-//    @Override
-//    @Transactional
-//    public String editRoomById(Long id, RoomRequest roomRequestDto) {
-//        Room room = roomRepository.findById(id)
-//                .orElseThrow(() -> new UserNotFoundInDb("Room not found"));
-//
-//        if (roomRequestDto.roomType() != null) {
-//            room.setRoomType(roomRequestDto.roomType());
-//        }
-//        if (roomRequestDto.price() != null) {
-//            room.setPrice(roomRequestDto.price());
-//        }
-//        if (roomRequestDto.available() != null) {
-//            room.setAvailable(roomRequestDto.available());
-//        }
-//
-//        room = roomRepository.save(room);
-//
-//        return "You have successfully updated room: " + room.getId();
-//    }
-//
+    @Override
+    public List<RoomResponse> filterByPriceAndState(BigDecimal minPrice, BigDecimal maxPrice, State state) {
+        List<Room> rooms = roomRepository.findByPriceBetweenAndHotelState(minPrice, maxPrice, state);
 
+        return rooms.stream().map(room -> new RoomResponse(
+                room.getId(),
+                room.getRoomType(),
+                room.getPrice(),
+                room.isAvailable(),
+                room.getPictures(),
+                room.getHotel()
+        )).collect(Collectors.toList());
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//    @Override
-//    public RoomResponse activateRoomByHotelId(Long hotelId, Long roomId) {
-//        Room room = roomRepository.findByHotelIdAndId(hotelId, roomId)
-//                .orElseThrow(() -> new UserNotFoundInDb("Room with ID " + roomId + " not found in hotel with ID " + hotelId));
-//
-//        room.setAvailable(true);
-//        room = roomRepository.save(room);
-//        List<String> pictureUrls = room.getPictures().stream()
-//                .map(RoomPicture::getFileName)
-//                .toList();
-//
-//        return new RoomResponse(
-//                room.getId(),
-//                room.getRoomType(),
-//                room.getPrice(),
-//                room.isAvailable(),
-//                pictureUrls
-//        );
-//    }
-//
-//
-//    @Override
-//    public List<RoomResponse> filterHotelRoomByType(Long hotelId, String type) {
-//        List<Room> rooms = roomRepository.findByHotelIdAndRoomType(hotelId, RoomType.valueOf(type.toUpperCase()));
-//
-//        return rooms.stream()
-//                .map(room-> {
-//                    List<String> pictureUrls = room.getPictures().stream()
-//                            .map(RoomPicture::getFileName)
-//                            .toList();
-//                    return new RoomResponse(
-//                            room.getId(),
-//                            room.getRoomType(),
-//                            room.getPrice(),
-//                            room.isAvailable(),
-//                            pictureUrls
-//                    );
-//                }).collect(Collectors.toList());
-//    }
-//
-//
-//    @Override
-//    public List<RoomResponse> filterByPriceAndState(BigDecimal minPrice, BigDecimal maxPrice, String state) {
-//        List<Room> rooms = roomRepository.findByPriceBetweenAndHotel_State(minPrice, maxPrice, State.valueOf(state.toUpperCase()));
-//
-//
-//        return rooms.stream()
-//                .map(room-> {
-//                    List<String> pictureUrls = room.getPictures().stream()
-//                            .map(RoomPicture::getFileName)
-//                            .toList();
-//                    return new RoomResponse(
-//                            room.getId(),
-//                            room.getRoomType(),
-//                            room.getPrice(),
-//                            room.isAvailable(),
-//                            pictureUrls
-//                    );
-//                }).collect(Collectors.toList());
-//    }
 
 
 }
