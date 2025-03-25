@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -15,7 +16,11 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "users")
 public class User {
+
     @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(updatable = false, nullable = false)
     private String id;
 
     @Column(unique = true, nullable = false)
