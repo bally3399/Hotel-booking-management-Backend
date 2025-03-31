@@ -16,15 +16,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class RoomResponse{
-
        private Long id;
        private RoomType roomType;
        private BigDecimal price;
        private boolean isAvailable;
-       private List<RoomPicture> pictureUrls;
+       private List<String> pictureUrls;
        private Hotel hotel;
-
-
 
 }
 

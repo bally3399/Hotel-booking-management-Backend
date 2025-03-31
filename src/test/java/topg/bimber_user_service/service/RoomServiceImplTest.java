@@ -58,7 +58,7 @@ class RoomServiceImplTest {
                 new byte[10]
         );
 
-        RoomResponse response = roomServiceImpl.createRoom(request, Collections.singletonList(mockFile));
+        RoomResponse response = roomServiceImpl.createRoom(request, List.of("picture1","picture2", "picture3"));
 
         assertNotNull(response);
         assertEquals(RoomType.DELUXE, response.getRoomType());

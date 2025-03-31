@@ -85,9 +85,9 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalStateException("You already have an active booking for this hotel");
         }
 
-        if (bookingRepository.existsByRoomIdAndDatesOverlap(room.getId(), startDate, endDate)) {
-            throw new IllegalStateException("Room is already booked for the selected dates");
-        }
+//        if (bookingRepository.existsByRoomIdAndDatesOverlap(room.getId(), startDate, endDate)) {
+//            throw new IllegalStateException("Room is already booked for the selected dates");
+//        }
 
         if (user.getBalance().compareTo(room.getPrice()) < 0) {
             throw new IllegalStateException("Insufficient balance to book the room");
@@ -124,7 +124,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Async
-    private void scheduleRoomAvailabilityReset(Room room, LocalDate endDate) {
+    protected void scheduleRoomAvailabilityReset(Room room, LocalDate endDate) {
         long delay = ChronoUnit.MILLIS.between(LocalDateTime.now(), endDate.atStartOfDay());
 
         Executors.newSingleThreadScheduledExecutor().schedule(() -> {
@@ -138,17 +138,17 @@ public class BookingServiceImpl implements BookingService {
         String emailMessage = String.format(
                 """
                         Dear %s,
-                        
+
                         Thank you for booking a room at %s.
-                        
+
                         Your booking details:
                         - Hotel: %s
                         - Room: %s
                         - Start Date: %s
                         - End Date: %s
-                        
+
                         Your booking has been confirmed successfully. We look forward to hosting you!
-                        
+
                         Best regards,
                         %s Team""",
                 user.getUsername(),
@@ -231,19 +231,19 @@ public class BookingServiceImpl implements BookingService {
         String emailMessage = String.format(
                 """
                         Dear %s,
-                        
+
                         Your booking at %s has been successfully cancelled.
-                        
+
                         Booking details:
                         - Hotel: %s
                         - Room: %s
                         - Start Date: %s
                         - End Date: %s
-                        
+
                         A refund of %s has been credited back to your account.
-                        
+
                         We hope to see you again soon!
-                        
+
                         Best regards,
                         %s Team""",
                 user.getUsername(),
