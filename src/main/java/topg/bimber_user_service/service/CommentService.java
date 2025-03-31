@@ -11,7 +11,7 @@ public interface CommentService {
 
     List<CommentResponse> getCommentsByHotel(Long hotelId);
 
-    CommentResponse getCommentsByUser(String userId);
+    List<CommentResponse>getCommentsByUser(String userId);
 
     String deleteComment(Long hotelId, Long commentId, String userId);
 }
