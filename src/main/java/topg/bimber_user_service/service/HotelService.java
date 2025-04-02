@@ -13,7 +13,7 @@ public interface HotelService {
     HotelResponseDto editHotelById(Long id, HotelRequestDto hotelRequestDto);
     HotelDtoFilter getHotelById(Long id);
     String deleteHotelById(Long id);
-    Integer getTotalHotelsInState(String state);
+    List<HotelDtoFilter> getTotalHotelsInState(String state);
 
     List<HotelDtoFilter> getMostBookedHotelsByState(String stateName);
 }

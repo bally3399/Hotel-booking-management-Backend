@@ -33,7 +33,6 @@ public class Comment {
     @Column(nullable = false, length = 1000)
     private String content;
 
-<<<<<<< HEAD
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using= LocalDateTimeSerializer.class)
     private LocalDateTime createdAt;
@@ -51,13 +50,8 @@ public class Comment {
         updatedAt = LocalDateTime.now();
     }
 
-=======
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
->>>>>>> a644fbc0a1a7759b640d878b03b05cc30ee8f40a
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
+
+
+
 }

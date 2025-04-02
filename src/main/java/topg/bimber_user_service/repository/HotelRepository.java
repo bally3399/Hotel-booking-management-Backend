@@ -15,9 +15,9 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
     Integer countByState(State state);
 
-//    @Query("SELECT h FROM Hotel h JOIN Booking b ON h.id = b.hotel.id " +
-//            "WHERE h.state = :state " +
-//            "GROUP BY h.id " +
-//            "ORDER BY COUNT(b.id) DESC")
+    @Query("SELECT h FROM Hotel h JOIN Booking b ON h.id = b.hotel.id " +
+            "WHERE h.state = :state " +
+            "GROUP BY h.id " +
+            "ORDER BY COUNT(b.id) DESC")
     List<Hotel> findMostBookedHotelsByState(State state);
 }
