@@ -56,8 +56,8 @@ public class HotelController {
 
     @GetMapping("/count")
     public ResponseEntity<?> getTotalHotelsInState(@RequestParam String state) {
-            int count = hotelServiceImpl.getTotalHotelsInState(state);
-            return ResponseEntity.status(200).body(new BaseResponse<>(true,count));
+            var response = hotelServiceImpl.getTotalHotelsInState(state);
+            return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
 

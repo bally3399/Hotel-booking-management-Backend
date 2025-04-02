@@ -34,7 +34,7 @@ public class HotelServiceImpl implements HotelService {
     public HotelResponseDto createHotel(CreateHotelDto createHotelDto) {
         Hotel hotel = modelMapper.map(createHotelDto,Hotel.class);
         hotel = hotelRepository.save(hotel);
-        HotelDto hotelDto = new HotelDto(hotel.getId(), hotel.getName(), hotel.getState(), hotel.getLocation(), hotel.getAmenities(), hotel.getDescription(), hotel.getPictures());
+        HotelDto hotelDto = new HotelDto(hotel.getId(), hotel.getName(),  hotel.getState(), hotel.getLocation(), hotel.getAmenities(), hotel.getDescription(), hotel.getPictures());
         return new HotelResponseDto(true, hotelDto);
     }
 
@@ -70,24 +70,24 @@ public class HotelServiceImpl implements HotelService {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new InvalidUserInputException("Id not found"));
 
-        if (hotelRequestDto.name() != null &&
-                !hotel.getName().equals(hotelRequestDto.name()) &&
-                hotelRepository.findByName(hotelRequestDto.name()).isPresent()) {
+        if (hotelRequestDto.getName() != null &&
+                !hotel.getName().equals(hotelRequestDto.getName()) &&
+                hotelRepository.findByName(hotelRequestDto.getName()).isPresent()) {
             throw new InvalidUserInputException("Name is already taken");
         }
-        if (hotelRequestDto.name() != null) {
-            hotel.setName(hotelRequestDto.name());
+        if (hotelRequestDto.getName() != null) {
+            hotel.setName(hotelRequestDto.getName());
         }
-        if (hotelRequestDto.description() != null) {
-            hotel.setDescription(hotelRequestDto.description());
-        }
-
-        if (hotelRequestDto.state() != null) {
-            hotel.setState(hotelRequestDto.state());
+        if (hotelRequestDto.getDescription() != null) {
+            hotel.setDescription(hotelRequestDto.getDescription());
         }
 
-        if (hotelRequestDto.location() != null) {
-            hotel.setLocation(hotelRequestDto.location());
+        if (hotelRequestDto.getState() != null) {
+            hotel.setState(hotelRequestDto.getState());
+        }
+
+        if (hotelRequestDto.getLocation() != null) {
+            hotel.setLocation(hotelRequestDto.getLocation());
         }
         hotel = hotelRepository.save(hotel);
         HotelDto hotelDto = new HotelDto(hotel.getId(), hotel.getName(), hotel.getState(), hotel.getLocation(), hotel.getAmenities(), hotel.getDescription(), hotel.getPictures());
@@ -122,9 +122,8 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public Integer getTotalHotelsInState(String state) {
-        State stateName = State.valueOf(state.toUpperCase());
-        return hotelRepository.countByState(stateName);
+    public List<HotelDtoFilter> getTotalHotelsInState(String state) {
+        return getHotelsByState(state);
     }
 
     @Override
