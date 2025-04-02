@@ -10,10 +10,10 @@ public record HotelDto(
         Long id,
         String name,
         State state,
-        String location,// Adding state to match the updated hotel model
+        String location,
         List<String> amenities,
-        String description, // Adding amenities list
-        List<PictureResponseDto> pictures  // Adding pictures list
+        String description,
+        List<String> pictures
 ) implements Serializable {
     private static final long serialVersionUID = 1L;
 }
