@@ -12,14 +12,14 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     boolean existsByUserIdAndHotelIdAndStatus(String userId, Long hotelId, BookingStatus bookingStatus);
 
-    @Query("""
-    SELECT COUNT(b) > 0 FROM Booking b\s
-    WHERE b.room.id = :roomId\s
-    AND (:startDate < b.endDate AND :endDate > b.startDate)
-""")
-    boolean existsByRoomIdAndDatesOverlap(@Param("roomId") Long roomId,
-                                          @Param("startDate") LocalDate startDate,
-                                          @Param("endDate") LocalDate endDate);
+//    @Query("""
+//    SELECT COUNT(b) > 0 FROM Booking b\s
+//    WHERE b.room.id = :roomId\s
+//    AND (:startDate < b.endDate AND :endDate > b.startDate)
+//""")
+//    boolean existsByRoomIdAndDatesOverlap(@Param("roomId") Long roomId,
+//                                          @Param("startDate") LocalDate startDate,
+//                                          @Param("endDate") LocalDate endDate);
 
     Optional<Booking> findByUserIdAndHotelId(String userId, Long hotelId);
 }

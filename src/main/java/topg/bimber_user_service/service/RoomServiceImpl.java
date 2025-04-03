@@ -38,7 +38,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Transactional
     @Override
-    public RoomResponse createRoom(RoomRequest roomRequest, List<MultipartFile> pictures) {
+    public RoomResponse createRoom(RoomRequest roomRequest, List<String> pictures) {
         Hotel hotel = hotelRepository.findById(roomRequest.getHotelId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
 
@@ -47,26 +47,10 @@ public class RoomServiceImpl implements RoomService {
                 .roomType(roomRequest.getRoomType())
                 .price(roomRequest.getPrice())
                 .available(roomRequest.getIsAvailable())
+                .pictures(pictures)
                 .build();
 
         Room savedRoom = roomRepository.save(room);
-
-        List<RoomPicture> savedPictures = new ArrayList<>();
-        if (pictures != null) {
-            for (MultipartFile file : pictures) {
-                RoomPicture picture = new RoomPicture();
-                picture.setRoom(room);
-                picture.setFileName(file.getOriginalFilename());
-                picture.setFileType(file.getContentType());
-                try {
-                    picture.setData(file.getBytes());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                savedPictures.add(roomPictureRepository.save(picture));
-            }
-        }
 
         return new RoomResponse
                 (
@@ -74,7 +58,7 @@ public class RoomServiceImpl implements RoomService {
                         savedRoom.getRoomType(),
                         savedRoom.getPrice(),
                         savedRoom.isAvailable(),
-                        savedPictures,
+                        savedRoom.getPictures(),
                         savedRoom.getHotel()
 
                 );

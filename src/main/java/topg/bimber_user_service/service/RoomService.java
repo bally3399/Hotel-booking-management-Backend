@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface RoomService {
-    RoomResponse createRoom(RoomRequest roomRequest, List<MultipartFile> pictures);
+    RoomResponse createRoom(RoomRequest roomRequest, List<String> pictures);
     String editRoomById(Long id, RoomRequest roomRequest);
     String deleteRoomById(Long id);
     List<RoomResponse> findAllRoomsByHotelId(Long hotelId);

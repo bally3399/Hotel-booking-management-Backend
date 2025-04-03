@@ -41,13 +41,13 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     @Override
     public BookingResponseDto bookRoom(BookingRequestDto bookingRequestDto) {
-        User user = getEntityOrThrow(() -> userRepository.findById(bookingRequestDto.userId()), "User not found");
-        Room room = getEntityOrThrow(() -> roomRepository.findById(bookingRequestDto.roomId()), "Room not found");
-        Hotel hotel = getEntityOrThrow(() -> hotelRepository.findById(bookingRequestDto.hotelId()), "Hotel not found");
+        User user = getEntityOrThrow(() -> userRepository.findById(bookingRequestDto.getUserId()), "User not found");
+        Room room = getEntityOrThrow(() -> roomRepository.findById(bookingRequestDto.getRoomId()), "Room not found");
+        Hotel hotel = getEntityOrThrow(() -> hotelRepository.findById(bookingRequestDto.getHotelId()), "Hotel not found");
 
         validateBookingConditions(user, room, bookingRequestDto);
 
-        BigDecimal totalPrice = calculateTotalPrice(room.getPrice(), bookingRequestDto.startDate(), bookingRequestDto.endDate());
+        BigDecimal totalPrice = calculateTotalPrice(room.getPrice(), bookingRequestDto.getStartDate(), bookingRequestDto.getEndDate());
 
         user.setBalance(user.getBalance().subtract(totalPrice));
 
@@ -58,7 +58,7 @@ public class BookingServiceImpl implements BookingService {
         room.setAvailable(false);
         roomRepository.save(room);
 
-        scheduleRoomAvailabilityReset(room, bookingRequestDto.endDate());
+        scheduleRoomAvailabilityReset(room, bookingRequestDto.getEndDate());
 
         sendConfirmationEmail(user, room, booking);
 
@@ -66,14 +66,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void validateBookingConditions(User user, Room room, BookingRequestDto bookingRequestDto) {
-        LocalDate startDate = bookingRequestDto.startDate();
-        LocalDate endDate = bookingRequestDto.endDate();
+        LocalDateTime startDate = bookingRequestDto.getStartDate();
+        LocalDateTime endDate = bookingRequestDto.getEndDate();
 
         if (!room.isAvailable()) {
             throw new IllegalStateException("Room is not available");
         }
 
-        if (startDate.isBefore(LocalDate.now())) {
+        if (startDate.isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("Cannot book a room for past dates");
         }
 
@@ -81,20 +81,20 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalStateException("End date cannot be before start date");
         }
 
-        if (bookingRepository.existsByUserIdAndHotelIdAndStatus(user.getId(), bookingRequestDto.hotelId(), BookingStatus.CONFIRMED)) {
+        if (bookingRepository.existsByUserIdAndHotelIdAndStatus(user.getId(), bookingRequestDto.getHotelId(), BookingStatus.CONFIRMED)) {
             throw new IllegalStateException("You already have an active booking for this hotel");
         }
 
-        if (bookingRepository.existsByRoomIdAndDatesOverlap(room.getId(), startDate, endDate)) {
-            throw new IllegalStateException("Room is already booked for the selected dates");
-        }
+//        if (bookingRepository.existsByRoomIdAndDatesOverlap(room.getId(), startDate, endDate)) {
+//            throw new IllegalStateException("Room is already booked for the selected dates");
+//        }
 
         if (user.getBalance().compareTo(room.getPrice()) < 0) {
             throw new IllegalStateException("Insufficient balance to book the room");
         }
     }
 
-    private BigDecimal calculateTotalPrice(BigDecimal pricePerNight, LocalDate startDate, LocalDate endDate) {
+    private BigDecimal calculateTotalPrice(BigDecimal pricePerNight, LocalDateTime startDate, LocalDateTime endDate) {
         long numberOfDays = ChronoUnit.DAYS.between(startDate, endDate);
         return pricePerNight.multiply(BigDecimal.valueOf(numberOfDays));
     }
@@ -104,8 +104,8 @@ public class BookingServiceImpl implements BookingService {
                 .user(user)
                 .room(room)
                 .hotel(hotel)
-                .startDate(bookingRequestDto.startDate())
-                .endDate(bookingRequestDto.endDate())
+                .startDate(bookingRequestDto.getStartDate())
+                .endDate(bookingRequestDto.getEndDate())
                 .status(BookingStatus.CONFIRMED)
                 .isPaid(true)
                 .totalPrice(totalPrice)
@@ -124,8 +124,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Async
-    private void scheduleRoomAvailabilityReset(Room room, LocalDate endDate) {
-        long delay = ChronoUnit.MILLIS.between(LocalDateTime.now(), endDate.atStartOfDay());
+    protected void scheduleRoomAvailabilityReset(Room room, LocalDateTime endDate) {
+        long delay = ChronoUnit.MILLIS.between(LocalDateTime.now(), endDate.toLocalDate().atStartOfDay());
 
         Executors.newSingleThreadScheduledExecutor().schedule(() -> {
             room.setAvailable(true);
@@ -138,17 +138,17 @@ public class BookingServiceImpl implements BookingService {
         String emailMessage = String.format(
                 """
                         Dear %s,
-                        
+
                         Thank you for booking a room at %s.
-                        
+
                         Your booking details:
                         - Hotel: %s
                         - Room: %s
                         - Start Date: %s
                         - End Date: %s
-                        
+
                         Your booking has been confirmed successfully. We look forward to hosting you!
-                        
+
                         Best regards,
                         %s Team""",
                 user.getUsername(),
@@ -231,19 +231,19 @@ public class BookingServiceImpl implements BookingService {
         String emailMessage = String.format(
                 """
                         Dear %s,
-                        
+
                         Your booking at %s has been successfully cancelled.
-                        
+
                         Booking details:
                         - Hotel: %s
                         - Room: %s
                         - Start Date: %s
                         - End Date: %s
-                        
+
                         A refund of %s has been credited back to your account.
-                        
+
                         We hope to see you again soon!
-                        
+
                         Best regards,
                         %s Team""",
                 user.getUsername(),
@@ -276,13 +276,13 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new UserNotFoundInDb("Booking not found"));
 
-        Room room = roomRepository.findById(bookingRequestDto.roomId())
+        Room room = roomRepository.findById(bookingRequestDto.getRoomId())
                 .orElseThrow(() -> new UserNotFoundInDb("Room not found"));
 
         booking.setRoom(room);
-        booking.setStartDate(bookingRequestDto.startDate());
-        booking.setEndDate(bookingRequestDto.endDate());
-        booking.setPaid(Boolean.TRUE.equals(bookingRequestDto.isPaid()));
+        booking.setStartDate(bookingRequestDto.getStartDate());
+        booking.setEndDate(bookingRequestDto.getEndDate());
+        booking.setPaid(Boolean.TRUE.equals(bookingRequestDto.getIsPaid()));
 
         booking = bookingRepository.save(booking);
 
