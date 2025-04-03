@@ -12,6 +12,7 @@ import topg.bimber_user_service.exceptions.InvalidDetailsException;
 import topg.bimber_user_service.exceptions.UserNotFoundInDb;
 import topg.bimber_user_service.mail.MailService;
 import topg.bimber_user_service.models.Admin;
+import topg.bimber_user_service.models.State;
 import topg.bimber_user_service.repository.AdminRepository;
 import topg.bimber_user_service.utils.JwtUtils;
 
@@ -152,6 +153,15 @@ public class AdminServiceImpl implements AdminService {
         return admin;
     }
 
+    @Override
+    public List<HotelDtoFilter> getHotelsByState(State state) {
+        return hotelServiceImpl.getHotelsByState(String.valueOf(state));
+    }
+
+    @Override
+    public HotelResponseDto editHotelById(Long id, HotelRequestDto updatedHotelDto) {
+        return hotelServiceImpl.editHotelById(id, updatedHotelDto);
+    }
 
 
 }

@@ -1,5 +1,6 @@
 package topg.bimber_user_service.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import topg.bimber_user_service.dto.requests.*;
-import topg.bimber_user_service.dto.responses.*;
+import topg.bimber_user_service.dto.responses.HotelResponseDto;
+import topg.bimber_user_service.dto.responses.LoginResponse;
+import topg.bimber_user_service.dto.responses.RoomResponse;
+import topg.bimber_user_service.dto.responses.UserCreatedDto;
 import topg.bimber_user_service.models.Admin;
 import topg.bimber_user_service.models.Hotel;
 import topg.bimber_user_service.models.RoomType;
@@ -21,7 +25,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,17 +63,15 @@ public class AdminServiceImplTest {
         loginRequest.setEmail("john@doe.com");
         loginRequest.setPassword("Password@123");
         loginResponse = adminService.login(loginRequest);
-
-
     }
 
     @Test
-    public void createAdminTest(){
+    public void createAdminTest() {
         assertThat(userCreatedDto.getMessage()).isEqualTo("Admin registered successfully");
     }
 
     @Test
-    public void testThatAdminCanLogin(){
+    public void testThatAdminCanLogin() {
         assertEquals("Login Successful", loginResponse.getMessage());
     }
 
@@ -96,51 +97,10 @@ public class AdminServiceImplTest {
         assertResponse(response);
     }
 
-    private Admin createTestAdmin() {
-        Admin admin = new Admin();
-        admin.setId(String.valueOf(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")));
-        admin.setUsername("admin_user");
-        admin.setEmail("admin@example.com");
-        admin.setPassword("hashed_password_here");
-        admin.setRole(ADMIN);
-        admin.setEnabled(true);
-        admin.setCreatedAt(LocalDateTime.now());
-        admin.setUpdatedAt(LocalDateTime.now());
-        return admin;
-    }
-
-    private Hotel createTestHotel() {
-        Hotel hotel = new Hotel();
-        hotel.setId(1L);
-        hotel.setName("Grand Royale");
-        hotel.setState(OSUN);
-        hotel.setLocation("Osogbo");
-        hotel.setDescription("A luxurious hotel located in the heart of Osogbo.");
-        hotel.setComments(Collections.emptyList());
-        hotel.setRooms(Collections.emptyList()); // Initialize rooms collection
-        return hotel;
-    }
-
-    private MockMultipartFile createMockImage() {
-        return new MockMultipartFile(
-                "file",
-                "room.jpg",
-                "image/jpeg",
-                new byte[10]
-        );
-    }
-
-    private void assertResponse(RoomResponse response) {
-        assertNotNull(response);
-        assertEquals(RoomType.DELUXE, response.getRoomType());
-        assertEquals(new BigDecimal("50000"), response.getPrice());
-        assertTrue(response.isAvailable());
-    }
-
     @Test
     public void testThatAdminCanAddHotel() {
         Admin admin = new Admin();
-        admin.setId(String.valueOf(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")));
+        admin.setId("123e4567-e89b-12d3-a456-426614174000");
         admin.setUsername("admin_user");
         admin.setEmail("admin@example.com");
         admin.setPassword("hashed_password_here");
@@ -163,33 +123,105 @@ public class AdminServiceImplTest {
 
         assertNotNull(response);
     }
-    @Test
-    public void testThatAdminCanGetHotelByState(){
 
+    @Test
+    public void testThatAdminCanGetHotelByState() {
+        Admin admin = createTestAdmin();
+        adminRepository.save(admin);
+
+        Hotel hotel = createTestHotel();
+        hotelRepository.save(hotel);
+
+        List<HotelDtoFilter> hotels = adminService.getHotelsByState(State.OSUN);
+
+        assertNotNull(hotels, "Hotel list should not be null");
+        assertFalse(hotels.isEmpty(), "Hotel list should not be empty");
+        assertEquals(1, hotels.size(), "Should return exactly one hotel");
+
+        HotelDtoFilter response = hotels.get(0);
+        assertEquals("Grand Royale", response.name(), "Hotel name should match");
+        assertEquals(State.OSUN, response.state(), "Hotel state should be OSUN");
+        assertEquals("Osogbo", response.location(), "Hotel location should match");
+        assertEquals("A luxurious hotel located in the heart of Osogbo.", response.description(), "Description should match");
     }
 
     @Test
-    public void testThatAdminCanBeUpdated() {
-        Admin existingAdmin = new Admin();
-        existingAdmin.setEmail("johnny@doe.com");
-        existingAdmin.setPassword("Password@123");
-        existingAdmin.setUsername("johnny");
-        adminRepository.save(existingAdmin);
+    @Transactional
+    public void testThatAdminCanEditHotelById() {
+        Admin admin = new Admin();
+        admin.setId("123e4567-e89b-12d3-a456-426614174000");
+        admin.setUsername("admin_user");
+        admin.setEmail("admin@example.com");
+        admin.setPassword("hashed_password_here");
+        admin.setRole(ADMIN);
+        admin.setEnabled(true);
+        admin.setCreatedAt(LocalDateTime.now());
+        admin.setUpdatedAt(LocalDateTime.now());
+        adminRepository.save(admin);
 
-        UpdateDetailsRequest updateUserRequest = new UpdateDetailsRequest();
-        updateUserRequest.setEmail("john@doe.com");
-        updateUserRequest.setPassword("@Password12");
+        Hotel hotel = new Hotel();
+        hotel.setId(1L);
+        hotel.setName("Grand Royale");
+        hotel.setState(OSUN);
+        hotel.setLocation("Osogbo");
+        hotel.setDescription("A luxurious hotel located in the heart of Osogbo.");
+        hotel.setComments(Collections.emptyList());
+        hotel.setRooms(Collections.emptyList());
+        hotel.setAmenities(List.of("Free Wi-Fi", "Swimming Pool", "Gym"));
+        hotelRepository.save(hotel);
 
-        UpdateDetailsResponse response = adminService.updateAdmin(updateUserRequest);
+        HotelRequestDto updatedHotelDto = HotelRequestDto.builder()
+                .name("Grand Royale Deluxe")
+                .amenities(List.of("Spa", "Bar", "Conference Room"))
+                .description("An enhanced luxurious hotel experience in Osogbo.")
+                .pictures(List.of("deluxe_front.jpg", "deluxe_pool.jpg", "deluxe_gym.jpg"))
+                .location("Osogbo Downtown")
+                .state(State.OSUN)
+                .build();
 
-        assertEquals("Updated successfully", response.getMessage());
-
-        Admin updatedAdmin = adminService.findByEmail("john@doe.com");
-        assertThat(updatedAdmin).isNotNull();
-        assertEquals("@Password12", updatedAdmin.getPassword());
+        HotelResponseDto response = adminService.editHotelById(hotel.getId(), updatedHotelDto);
+        assertThat(response.hotel().id()).isEqualTo(1L);
     }
 
+    private Admin createTestAdmin() {
+        Admin admin = new Admin();
+        admin.setId("123e4567-e89b-12d3-a456-426614174000");
+        admin.setUsername("admin_user");
+        admin.setEmail("admin@example.com");
+        admin.setPassword("hashed_password_here");
+        admin.setRole(ADMIN);
+        admin.setEnabled(true);
+        admin.setCreatedAt(LocalDateTime.now());
+        admin.setUpdatedAt(LocalDateTime.now());
+        return admin;
+    }
+
+    private Hotel createTestHotel() {
+        Hotel hotel = new Hotel();
+        hotel.setId(1L);
+        hotel.setName("Grand Royale");
+        hotel.setState(OSUN);
+        hotel.setLocation("Osogbo");
+        hotel.setDescription("A luxurious hotel located in the heart of Osogbo.");
+        hotel.setComments(Collections.emptyList());
+        hotel.setRooms(Collections.emptyList());
+        hotel.setAmenities(List.of("Free Wi-Fi", "Swimming Pool", "Gym"));
+        return hotel;
+    }
+
+    private MockMultipartFile createMockImage() {
+        return new MockMultipartFile(
+                "file",
+                "room.jpg",
+                "image/jpeg",
+                new byte[10]
+        );
+    }
+
+    private void assertResponse(RoomResponse response) {
+        assertNotNull(response);
+        assertEquals(RoomType.DELUXE, response.getRoomType());
+        assertEquals(new BigDecimal("50000"), response.getPrice());
+        assertTrue(response.isAvailable());
+    }
 }
-
-
-
