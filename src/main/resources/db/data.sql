@@ -6,6 +6,7 @@ TRUNCATE TABLE hotel CASCADE;
 TRUNCATE TABLE room CASCADE;
 TRUNCATE TABLE booking CASCADE;
 TRUNCATE TABLE payment CASCADE;
+TRUNCATE TABLE comment CASCADE;
 
 -- Insert data into admins table
 INSERT INTO admins (id, username, email, password, created_at, updated_at, role, enabled)
@@ -61,3 +62,8 @@ INSERT INTO payment (id, booking_id, amount, success, user_id)
 VALUES
     (10, 1, 50000, true, '123e4567-e89b-12d3-a456-426614174001'),
     (11, 2, 35000, true, '123e4567-e89b-12d3-a456-426614174002');
+
+INSERT INTO comment (id,hotel_id,user_id,content) VALUES
+    (3,1,'123e4567-e89b-12d3-a456-426614174001','This a very nice hotel') ,
+    (4,2,'123e4567-e89b-12d3-a456-426614174002','This a very nice hotel, it has good Environment') ,
+    (5,3,'123e4567-e89b-12d3-a456-426614174003','This a very nice hotel, it has good Environment');

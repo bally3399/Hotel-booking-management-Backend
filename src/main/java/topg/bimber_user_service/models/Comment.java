@@ -24,11 +24,9 @@ public class Comment {
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
-    @Column(nullable = false)
-    private String userId;
-
-    @Column(nullable = false)
-    private String userName;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false, length = 1000)
     private String content;
