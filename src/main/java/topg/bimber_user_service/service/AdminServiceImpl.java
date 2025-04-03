@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import topg.bimber_user_service.dto.requests.CreateHotelDto;
 import topg.bimber_user_service.dto.requests.LoginRequest;
+import topg.bimber_user_service.dto.requests.RoomRequest;
 import topg.bimber_user_service.dto.requests.UserRequestDto;
-import topg.bimber_user_service.dto.responses.LoginResponse;
-import topg.bimber_user_service.dto.responses.UserCreatedDto;
-import topg.bimber_user_service.dto.responses.UserResponseDto;
+import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.exceptions.AdminExistException;
 import topg.bimber_user_service.exceptions.InvalidDetailsException;
 import topg.bimber_user_service.exceptions.UserNotFoundInDb;
@@ -17,6 +18,8 @@ import topg.bimber_user_service.models.Admin;
 import topg.bimber_user_service.repository.AdminRepository;
 import topg.bimber_user_service.utils.JwtUtils;
 
+
+import java.util.List;
 
 import static topg.bimber_user_service.utils.ValidationUtils.isValidEmail;
 import static topg.bimber_user_service.utils.ValidationUtils.isValidPassword;
@@ -29,6 +32,8 @@ public class AdminServiceImpl implements AdminService {
     private final ModelMapper modelMapper;
     private final AdminRepository adminRepository;
     private final MailService mailService;
+    private final RoomServiceImpl roomServiceImpl;
+    private final HotelServiceImpl hotelServiceImpl;
 
     @Override
     public UserCreatedDto createAdmin(UserRequestDto userRequestDto) {
@@ -115,7 +120,15 @@ public class AdminServiceImpl implements AdminService {
         adminRepository.deleteAll();
     }
 
+    @Override
+    public RoomResponse addRoom(RoomRequest roomRequest, List<String> multipartFiles) {
+        return roomServiceImpl.createRoom(roomRequest, multipartFiles);
+    }
 
+    @Override
+    public HotelResponseDto createHotel(CreateHotelDto createHotelDto) {
+        return hotelServiceImpl.createHotel(createHotelDto);
+    }
 
 
 }
