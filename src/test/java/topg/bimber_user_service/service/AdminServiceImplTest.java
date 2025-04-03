@@ -7,14 +7,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-import topg.bimber_user_service.dto.requests.CreateHotelDto;
-import topg.bimber_user_service.dto.requests.LoginRequest;
-import topg.bimber_user_service.dto.requests.RoomRequest;
-import topg.bimber_user_service.dto.requests.UserRequestDto;
-import topg.bimber_user_service.dto.responses.HotelResponseDto;
-import topg.bimber_user_service.dto.responses.LoginResponse;
-import topg.bimber_user_service.dto.responses.RoomResponse;
-import topg.bimber_user_service.dto.responses.UserCreatedDto;
+import topg.bimber_user_service.dto.requests.*;
+import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.models.Admin;
 import topg.bimber_user_service.models.Hotel;
 import topg.bimber_user_service.models.RoomType;
@@ -172,6 +166,27 @@ public class AdminServiceImplTest {
     @Test
     public void testThatAdminCanGetHotelByState(){
 
+    }
+
+    @Test
+    public void testThatAdminCanBeUpdated() {
+        Admin existingAdmin = new Admin();
+        existingAdmin.setEmail("johnny@doe.com");
+        existingAdmin.setPassword("Password@123");
+        existingAdmin.setUsername("johnny");
+        adminRepository.save(existingAdmin);
+
+        UpdateDetailsRequest updateUserRequest = new UpdateDetailsRequest();
+        updateUserRequest.setEmail("john@doe.com");
+        updateUserRequest.setPassword("@Password12");
+
+        UpdateDetailsResponse response = adminService.updateAdmin(updateUserRequest);
+
+        assertEquals("Updated successfully", response.getMessage());
+
+        Admin updatedAdmin = adminService.findByEmail("john@doe.com");
+        assertThat(updatedAdmin).isNotNull();
+        assertEquals("@Password12", updatedAdmin.getPassword());
     }
 
 }

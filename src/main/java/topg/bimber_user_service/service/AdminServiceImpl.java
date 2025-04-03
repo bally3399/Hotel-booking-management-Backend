@@ -4,13 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import topg.bimber_user_service.dto.requests.CreateHotelDto;
-import topg.bimber_user_service.dto.requests.LoginRequest;
-import topg.bimber_user_service.dto.requests.RoomRequest;
-import topg.bimber_user_service.dto.requests.UserRequestDto;
+import topg.bimber_user_service.dto.requests.*;
 import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.exceptions.AdminExistException;
+import topg.bimber_user_service.exceptions.EmailNotFoundException;
 import topg.bimber_user_service.exceptions.InvalidDetailsException;
 import topg.bimber_user_service.exceptions.UserNotFoundInDb;
 import topg.bimber_user_service.mail.MailService;
@@ -92,6 +89,24 @@ public class AdminServiceImpl implements AdminService {
     }
 
 
+    @Override
+    public UpdateDetailsResponse updateAdmin(UpdateDetailsRequest updateUserRequest) {
+        Admin admin = adminRepository.findByEmail(updateUserRequest.getEmail());
+
+        if (admin == null) {
+            UpdateDetailsResponse response = new UpdateDetailsResponse();
+            response.setMessage("Admin with email " + updateUserRequest.getEmail() + " not found");
+            return response;
+        }
+
+        admin.setEmail(updateUserRequest.getEmail());
+        admin.setPassword(updateUserRequest.getPassword());
+        adminRepository.save(admin);
+
+        UpdateDetailsResponse response = new UpdateDetailsResponse();
+        response.setMessage("Updated successfully");
+        return response;
+    }
 
     @Override
     public UserResponseDto getAdminById(String adminId) {
@@ -129,6 +144,14 @@ public class AdminServiceImpl implements AdminService {
     public HotelResponseDto createHotel(CreateHotelDto createHotelDto) {
         return hotelServiceImpl.createHotel(createHotelDto);
     }
+
+    @Override
+    public Admin findByEmail(String mail) {
+        Admin admin = adminRepository.findByEmail(mail);
+        if(!admin.getEmail().equals(mail)) throw new EmailNotFoundException("Email Not found");
+        return admin;
+    }
+
 
 
 }
