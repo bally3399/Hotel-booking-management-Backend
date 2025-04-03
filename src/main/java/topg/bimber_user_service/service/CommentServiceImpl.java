@@ -43,8 +43,7 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
 
         Comment comment = new Comment();
-        comment.setUserId(user.getId());
-        comment.setUserName(user.getUsername());
+        comment.setUser(user);
         comment.setHotel(hotel);
         comment.setContent(content);
 
@@ -54,8 +53,7 @@ public class CommentServiceImpl implements CommentService {
                 savedComment.getId(),
                 savedComment.getContent(),
                 savedComment.getCreatedAt(),
-                savedComment.getUserName(),
-                savedComment.getUserId(),
+                savedComment.getUser(),
                 savedComment.getHotel().getId()
         );
     }
@@ -82,8 +80,7 @@ public class CommentServiceImpl implements CommentService {
                         comment.getId(),
                         comment.getContent(),
                         comment.getCreatedAt(),
-                        comment.getUserName(),
-                        comment.getUserId(),
+                        comment.getUser(),
                         comment.getHotel().getId()
                 ))
                 .collect(Collectors.toList());
@@ -100,8 +97,7 @@ public class CommentServiceImpl implements CommentService {
                         comment.getId(),
                         comment.getContent(),
                         comment.getCreatedAt(),
-                        comment.getUserName(),
-                        comment.getUserId(),
+                        comment.getUser(),
                         comment.getHotel().getId()
                 ))
 
@@ -118,7 +114,7 @@ public class CommentServiceImpl implements CommentService {
             throw new IllegalArgumentException("Comment does not belong to the specified hotel");
         }
 
-        if (!comment.getUserId().equals(userId)) {
+        if (!comment.getUser().getId().equals(userId)) {
             throw new UnauthorizedException("You are not authorized to delete this comment");
         }
 

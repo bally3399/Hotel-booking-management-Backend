@@ -5,14 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import topg.bimber_user_service.dto.responses.CommentResponse;
 import topg.bimber_user_service.exceptions.InvalidDetailsException;
 import topg.bimber_user_service.exceptions.UnauthorizedException;
-import topg.bimber_user_service.models.Comment;
-import topg.bimber_user_service.models.Hotel;
-import topg.bimber_user_service.models.State;
-import topg.bimber_user_service.models.User;
+import topg.bimber_user_service.models.*;
 import topg.bimber_user_service.repository.CommentRepository;
 import topg.bimber_user_service.repository.HotelRepository;
 import topg.bimber_user_service.repository.UserRepository;
@@ -39,15 +37,17 @@ class CommentServiceImplTest {
     private CommentRepository commentRepository;
 
 
+    private User createUser(){
+        User user = new User();
+        user.setEmail("user@gmail.com");
+        user.setUsername("user");
+        user.setRole(Role.USER);
+        return userRepository.save(user);
+    }
     @Test
     @DisplayName("Should add a comment successfully")
     public void shouldAddCommentSuccessfully() {
-
-        User user = new User();
-        user.setUsername("testuser");
-        user.setEmail("test@example.com");
-
-        user = userRepository.save(user);
+        User user =createUser();
         assertNotNull(user.getId());
 
 
@@ -69,7 +69,7 @@ class CommentServiceImplTest {
 
 
         assertNotNull(response);
-        assertEquals(userId.toString(), response.getUserId()); // Ensure correct type comparison
+        assertEquals(userId.toString(), response.getUser().getId()); // Ensure correct type comparison
         assertEquals(hotelId, response.getHotelId());
         assertEquals(content, response.getContent());
         assertNotNull(response.getCreatedAt());
@@ -107,20 +107,16 @@ class CommentServiceImplTest {
 
         assertTrue(hotelRepository.existsById(hotel.getId()), "Hotel not found!");
 
-        User user = new User();
-        user.setId(UUID.randomUUID().toString());
-
+        User user =createUser();
         Comment comment1 = Comment.builder()
                 .hotel(hotel)
-                .userId(user.getId())
-                .userName("Jhay")
+                .user(user)
                 .content("Great stay!")
                 .build();
 
         Comment comment2 = Comment.builder()
                 .hotel(hotel)
-                .userId(user.getId())
-                .userName("Jumoke")
+                .user(user)
                 .content("Nice service!")
                 .build();
 
@@ -158,8 +154,7 @@ class CommentServiceImplTest {
 
     @Test
     void shouldReturnCommentsByUser() {
-        String userId = UUID.randomUUID().toString();
-
+        User user =createUser();
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
         hotel.setLocation("Test Location");
@@ -169,22 +164,20 @@ class CommentServiceImplTest {
 
         Comment comment1 = Comment.builder()
                 .hotel(hotel)
-                .userId(userId)
-                .userName("User1")
+                .user(user)
                 .content("Amazing experience!")
                 .build();
 
         Comment comment2 = Comment.builder()
                 .hotel(hotel)
-                .userId(userId)
-                .userName("User1")
+                .user(user)
                 .content("Would visit again!")
                 .build();
 
         commentRepository.save(comment1);
         commentRepository.save(comment2);
 
-        List<CommentResponse> responses = commentService.getCommentsByUser(userId);
+        List<CommentResponse> responses = commentService.getCommentsByUser(user.getId());
 
         assertNotNull(responses);
         assertEquals(2, responses.size());
@@ -204,8 +197,7 @@ class CommentServiceImplTest {
 
     @Test
     void shouldDeleteCommentSuccessfully() {
-        String userId = "user123";
-
+        User user =createUser();
 
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
@@ -220,8 +212,8 @@ class CommentServiceImplTest {
 
         Comment comment = new Comment();
         comment.setHotel(hotel);
-        comment.setUserId(userId);
-        comment.setUserName("Test User");
+        comment.setUser(user);
+
         comment.setContent("Test comment");
         comment.setCreatedAt(LocalDateTime.now());
         commentRepository.saveAndFlush(comment); // Ensure it's in DB
@@ -231,7 +223,7 @@ class CommentServiceImplTest {
         assertNotNull(commentId, "Comment ID is null!");
 
 
-        String result = commentService.deleteComment(hotel.getId(), commentId, userId);
+        String result = commentService.deleteComment(hotel.getId(), commentId, user.getId());
 
 
         assertEquals("Comment deleted successfully", result);
@@ -254,8 +246,7 @@ class CommentServiceImplTest {
     void shouldThrowExceptionWhenCommentDoesNotBelongToHotel() {
         Long hotelId = 1L;
         Long anotherHotelId = 2L;
-        String userId = "user123";
-
+        User user =createUser();
         Hotel hotel = new Hotel();
         hotel.setId(hotelId);
         hotel.setName("Test Hotel");
@@ -274,11 +265,10 @@ class CommentServiceImplTest {
 
         Comment comment = new Comment();
         comment.setHotel(anotherHotel);
-        comment.setUserId(userId);
-        comment.setUserName("Test User");
+        comment.setUser(user);
         comment.setContent("Wrong hotel comment");
         commentRepository.save(comment);
-
+        String userId = user.getId();
         assertThrows(IllegalArgumentException.class, () ->
                 commentService.deleteComment(hotelId, comment.getId(), userId)
         );
@@ -286,9 +276,12 @@ class CommentServiceImplTest {
 
     @Test
     void shouldThrowExceptionWhenUserIsNotAuthorizedToDelete() {
-        String userId = "user123";
-        String anotherUserId = "otherUser";
-
+        User user =createUser();
+        User user1 = new User();
+        user1.setEmail("user1@gmail.com");
+        user1.setUsername("user1");
+        user1.setRole(Role.USER);
+         user1 = userRepository.save(user1);
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
         hotel.setLocation("Test Location");
@@ -299,8 +292,7 @@ class CommentServiceImplTest {
 
         Comment comment = new Comment();
         comment.setHotel(hotel);
-        comment.setUserId(anotherUserId);
-        comment.setUserName("Another User");
+        comment.setUser(user1);
         comment.setContent("Unauthorized comment");
         comment = commentRepository.save(comment);
 
@@ -308,6 +300,9 @@ class CommentServiceImplTest {
         final Long commentId = comment.getId();
 
         Hotel finalHotel = hotel;
+        String userId = user.getId();
+        System.out.println(user1.getId());
+        System.out.println(user.getId());
         assertThrows(UnauthorizedException.class, () ->
                 commentService.deleteComment(finalHotel.getId(), commentId, userId) // Use final variable
         );
