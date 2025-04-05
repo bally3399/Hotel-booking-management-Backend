@@ -3,8 +3,10 @@ package topg.bimber_user_service.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
 import topg.bimber_user_service.dto.requests.UserRequestDto;
+import topg.bimber_user_service.dto.responses.BookingResponseDto;
 import topg.bimber_user_service.dto.responses.UserCreatedDto;
 import topg.bimber_user_service.dto.responses.UserResponseDto;
 import topg.bimber_user_service.exceptions.UserNotFoundException;
@@ -19,6 +21,8 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private BookingService bookingService;
 
     public UserServiceImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
@@ -52,11 +56,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String deleteUserById(String userId) {
-
-        userRepository.deleteById(userId);
-        return "User Deleted";
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found"));
+        userRepository.delete(user);
+        return "User deleted successfully";
     }
-
     @Override
     public String fundAccount(String userId, BigDecimal amount) {
         if(amount.compareTo(BigDecimal.ZERO)>1) throw new IllegalArgumentException("Invalid Amount");
@@ -68,8 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(String id) {
-        User user =  userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
-        return user;
+        return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
     }
 
     @Override
@@ -77,5 +80,25 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
         return users.stream().
                 map(user -> modelMapper.map(user,UserResponseDto.class)).toList();
+    }
+
+    @Override
+    public BookingResponseDto bookRoom(BookingRequestDto bookingRequest) {
+        return bookingService.bookRoom(bookingRequest);
+    }
+
+    @Override
+    public String cancelBooking(Long bookingId, String userId) {
+        return bookingService.cancelBooking(bookingId, userId);
+    }
+
+    @Override
+    public BookingResponseDto updateBooking(Long bookingId, BookingRequestDto updateRequest) {
+        return bookingService.updateBooking(bookingId, updateRequest);
+    }
+
+    @Override
+    public List<BookingResponseDto> listAllBookings() {
+        return bookingService.listAllBookings();
     }
 }
