@@ -24,19 +24,21 @@ public class UserController {
     private final UserServiceImpl userServiceImpl;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getUserById(@PathVariable("id") String userId) {
         UserResponseDto message = userServiceImpl.getUserById(userId);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,message));
     }
 
     @PutMapping("/edit/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponseDto> editUserById(@Valid @RequestBody UserAndAdminUpdateDto userAndAdminUpdateDto, @PathVariable("id") String userId) {
         UserResponseDto message = userServiceImpl.editUserById(userAndAdminUpdateDto, userId);
         return ResponseEntity.ok(message);
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> deleteUserById(@PathVariable("id") String userId) {
 //        if (!user.isEnabled()) {
 //            throw new IllegalStateException("Your account is not activated. Please activate your account.");
@@ -60,7 +62,7 @@ public class UserController {
 
 
     @PostMapping("/{userId}/fund")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> fundAccount(
             @PathVariable String userId,
             @RequestParam BigDecimal amount
