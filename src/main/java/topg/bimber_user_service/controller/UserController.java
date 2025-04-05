@@ -13,10 +13,7 @@ import topg.bimber_user_service.dto.responses.BookingResponseDto;
 import topg.bimber_user_service.dto.responses.UserResponseDto;
 import topg.bimber_user_service.models.User;
 import topg.bimber_user_service.service.UserService;
-<<<<<<< HEAD
-import topg.bimber_user_service.service.UserServiceImpl;
-=======
->>>>>>> 26a3894264779e03ca8cbf48c77a0688cb7bad0b
+
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,12 +22,10 @@ import java.util.List;
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
 public class UserController {
-<<<<<<< HEAD
-    private final UserService userServiceImpl;
-=======
+
     @Autowired
     private UserService userService;
->>>>>>> 26a3894264779e03ca8cbf48c77a0688cb7bad0b
+
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
@@ -41,7 +36,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody  UserRequestDto dto){
         try {
-            var response = userServiceImpl.createUser(dto);
+            var response = userService.createUser(dto);
             return ResponseEntity.ok(response);
         }catch (Exception e){
             throw new IllegalArgumentException(e.getMessage());
