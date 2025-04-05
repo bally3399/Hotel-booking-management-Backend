@@ -10,7 +10,6 @@ import topg.bimber_user_service.dto.responses.LoginResponse;
 import topg.bimber_user_service.dto.responses.UserCreatedDto;
 import topg.bimber_user_service.dto.requests.UserRequestDto;
 import topg.bimber_user_service.service.AdminServiceImpl;
-import topg.bimber_user_service.service.AuthService;
 import topg.bimber_user_service.service.UserServiceImpl;
 
 @RestController
@@ -20,17 +19,7 @@ import topg.bimber_user_service.service.UserServiceImpl;
 public class AuthController {
     private final AdminServiceImpl adminServiceImpl;
     private final UserServiceImpl userServiceImpl;
-    private final AuthService authService;
 
-
-
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequestDto) {
-        LoginResponse message = authService.login(loginRequestDto);
-        System.out.println(message.getJwtToken());
-        return ResponseEntity.status(200).body(new BaseResponse<>(true, message));
-
-    }
     @PostMapping("/user/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
         UserCreatedDto message = userServiceImpl.createUser(userRequestDto);

@@ -20,24 +20,25 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable String userId) {
-        UserResponseDto response = userService.getUserById(userId);
-        return ResponseEntity.ok(response);
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getUserById(@PathVariable("id") String userId) {
+        UserResponseDto message = userServiceImpl.getUserById(userId);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,message));
     }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<UserResponseDto> editUserById(
-            @PathVariable String userId,
-            @RequestBody UserAndAdminUpdateDto userAndAdminUpdateDto) {
-        UserResponseDto response = userService.editUserById(userAndAdminUpdateDto, userId);
-        return ResponseEntity.ok(response);
+    @PutMapping("/edit/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<UserResponseDto> editUserById(@Valid @RequestBody UserAndAdminUpdateDto userAndAdminUpdateDto, @PathVariable("id") String userId) {
+        UserResponseDto message = userServiceImpl.editUserById(userAndAdminUpdateDto, userId);
+        return ResponseEntity.ok(message);
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUserById(@PathVariable String userId) {
-        String response = userService.deleteUserById(userId);
-        return ResponseEntity.ok(response);
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> deleteUserById(@PathVariable("id") String userId) {
+        String message = userServiceImpl.deleteUserById(userId);
+        return ResponseEntity.ok(message);
     }
 
     @PatchMapping("/{userId}/fund")

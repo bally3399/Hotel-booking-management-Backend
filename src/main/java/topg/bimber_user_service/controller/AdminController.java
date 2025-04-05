@@ -25,31 +25,29 @@ public class AdminController {
     private final AdminServiceImpl adminServiceImpl;
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UpdateDetailsResponse> updateAdmin(@RequestBody UpdateDetailsRequest updateUserRequest) {
         UpdateDetailsResponse response = adminServiceImpl.updateAdmin(updateUserRequest);
         return ResponseEntity.ok(response);
     }
-//
-//    @GetMapping("/{id}")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public ResponseEntity<UserResponseDto> getAdminById(@PathVariable("id") String userId) {
-//        UserResponseDto message = adminServiceImpl.getAdminById(userId);
-//        return ResponseEntity.ok(message);
-//    }
+
 
     @PostMapping("/hotels")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HotelResponseDto> createHotel(@RequestBody CreateHotelDto createHotelDto) {
         HotelResponseDto response = adminServiceImpl.createHotel(createHotelDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/hotels/state/{state}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<HotelDtoFilter>> getHotelsByState(@PathVariable State state) {
         List<HotelDtoFilter> hotels = adminServiceImpl.getHotelsByState(state);
         return ResponseEntity.ok(hotels);
     }
 
     @PutMapping("/hotels/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HotelResponseDto> editHotelById(@PathVariable Long id,
                                                           @RequestBody HotelRequestDto updatedHotelDto) {
         HotelResponseDto response = adminServiceImpl.editHotelById(id, updatedHotelDto);
@@ -57,30 +55,35 @@ public class AdminController {
     }
 
     @GetMapping("/hotels/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HotelDtoFilter> getHotelById(@PathVariable Long id) {
         HotelDtoFilter response = adminServiceImpl.getHotelById(id);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/hotels/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteHotelById(@PathVariable Long id) {
         String response = adminServiceImpl.deleteHotelById(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/hotels/most-booked/{state}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<HotelDtoFilter>> getMostBookedHotelInState(@PathVariable State state) {
         List<HotelDtoFilter> hotels = adminServiceImpl.getMostBookedHotelInState(state);
         return ResponseEntity.ok(hotels);
     }
 
     @GetMapping("/hotels/in-state/{state}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<HotelDtoFilter>> getHotelsInState(@PathVariable State state) {
         List<HotelDtoFilter> hotels = adminServiceImpl.getHotelsInState(state);
         return ResponseEntity.ok(hotels);
     }
 
     @GetMapping("/filter/price-and-state")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoomResponse>> filterByPriceAndState(
             @RequestParam("minPrice") BigDecimal minPrice,
             @RequestParam("maxPrice") BigDecimal maxPrice,
@@ -90,6 +93,7 @@ public class AdminController {
     }
 
     @GetMapping("/hotel/{hotelId}/type/{type}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoomResponse>> filterHotelRoomByType(
             @PathVariable("hotelId") long hotelId,
             @PathVariable("type") String type) {
@@ -114,6 +118,7 @@ public class AdminController {
     }
 
     @GetMapping("/hotel/{hotelId}/available")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoomResponse>> findAllAvailableHotelRooms(
             @PathVariable("hotelId") long hotelId) {
         List<RoomResponse> rooms = adminServiceImpl.findAllAvailableHotelRooms(hotelId);
@@ -121,6 +126,7 @@ public class AdminController {
     }
 
     @GetMapping("/{roomId}/availability")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Boolean> isRoomAvailable(
             @PathVariable("roomId") long roomId) {
         boolean isAvailable = adminServiceImpl.isRoomAvailable(roomId);
@@ -128,6 +134,7 @@ public class AdminController {
     }
 
     @GetMapping("/hotel/{hotelId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoomResponse>> findAllRoomsByHotelId(
             @PathVariable("hotelId") long hotelId) {
         List<RoomResponse> rooms = adminServiceImpl.findAllRoomsByHotelId(hotelId);
@@ -142,6 +149,7 @@ public class AdminController {
     }
 
     @PutMapping("/{roomId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> editRoomById(
             @PathVariable("roomId") long roomId,
             @RequestBody RoomRequest roomRequest) {

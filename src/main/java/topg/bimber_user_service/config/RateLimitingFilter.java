@@ -30,11 +30,13 @@
 //        String ipAddress = httpRequest.getRemoteAddr(); // Get client IP address
 //        Bucket bucket = rateLimiterService.getBucket(ipAddress);
 //
-////        if (bucket.tryConsume(1)) {  // Allow request if token is available
-////            chain.doFilter(request, response);
-////        } else {
-////            httpResponse.setStatus(429);
-////            httpResponse.getWriter().write("Too many requests. Try again later.");
-////        }
+//        if (bucket.tryConsume(1)) {
+//            chain.doFilter(request, response);
+//        } else {
+//            httpResponse.setStatus(429);  // Too Many Requests
+//            httpResponse.getWriter().write("Too many requests. Try again later.");
+//            httpResponse.getWriter().flush();
+//        }
 //    }
+//
 //}

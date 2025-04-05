@@ -2,7 +2,6 @@ package topg.bimber_user_service.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import topg.bimber_user_service.dto.requests.*;
@@ -15,7 +14,6 @@ import topg.bimber_user_service.mail.MailService;
 import topg.bimber_user_service.models.Admin;
 import topg.bimber_user_service.models.State;
 import topg.bimber_user_service.repository.AdminRepository;
-import topg.bimber_user_service.config.JwtUtils;
 
 
 import java.math.BigDecimal;
