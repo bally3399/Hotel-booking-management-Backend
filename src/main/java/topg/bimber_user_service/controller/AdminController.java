@@ -29,13 +29,13 @@ public class AdminController {
         UpdateDetailsResponse response = adminServiceImpl.updateAdmin(updateUserRequest);
         return ResponseEntity.ok(response);
     }
-
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<UserResponseDto> getAdminById(@PathVariable("id") String userId) {
-        UserResponseDto message = adminServiceImpl.getAdminById(userId);
-        return ResponseEntity.ok(message);
-    }
+//
+//    @GetMapping("/{id}")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    public ResponseEntity<UserResponseDto> getAdminById(@PathVariable("id") String userId) {
+//        UserResponseDto message = adminServiceImpl.getAdminById(userId);
+//        return ResponseEntity.ok(message);
+//    }
 
     @PostMapping("/hotels")
     public ResponseEntity<HotelResponseDto> createHotel(@RequestBody CreateHotelDto createHotelDto) {
