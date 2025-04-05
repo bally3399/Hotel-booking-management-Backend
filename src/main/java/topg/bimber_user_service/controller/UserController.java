@@ -7,11 +7,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
+import topg.bimber_user_service.dto.requests.UserRequestDto;
 import topg.bimber_user_service.dto.responses.BaseResponse;
 import topg.bimber_user_service.dto.responses.BookingResponseDto;
 import topg.bimber_user_service.dto.responses.UserResponseDto;
 import topg.bimber_user_service.models.User;
 import topg.bimber_user_service.service.UserService;
+
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,14 +22,25 @@ import java.util.List;
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
 public class UserController {
+
     @Autowired
     private UserService userService;
+
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getUserById(@PathVariable("id") String userId) {
         UserResponseDto message = userService.getUserById(userId);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,message));
+    }
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody  UserRequestDto dto){
+        try {
+            var response = userService.createUser(dto);
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     @PutMapping("/edit/{id}")

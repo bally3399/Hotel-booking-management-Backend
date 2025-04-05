@@ -28,8 +28,10 @@ public class SecurityConfig {
                     .addFilterAt(authenticationFilter, BasicAuthenticationFilter.class)
                     .addFilterBefore(customAuthorizationFilter, CustomUsernamePasswordAuthenticationFilter.class)
                     .authorizeHttpRequests(c->c.requestMatchers("/api/v1/auth").permitAll()
+                            .requestMatchers("/api/v1/user/register").permitAll()
+                            .requestMatchers("/api/v1/admin/register").permitAll()
+                            .requestMatchers("/api/v1/user/**").hasAnyAuthority("USER")
                             .requestMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN")
-                            .requestMatchers("/api/v1/user/**").hasAnyAuthority("ADMIN")
 
                     )
                     .build();

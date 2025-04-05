@@ -57,6 +57,7 @@ public class User implements UserDetails {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        balance = BigDecimal.valueOf(0);
     }
 
     @PreUpdate
