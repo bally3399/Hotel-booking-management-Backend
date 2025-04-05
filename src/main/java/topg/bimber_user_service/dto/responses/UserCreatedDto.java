@@ -24,4 +24,5 @@ public class UserCreatedDto {
     @JsonSerialize(using= LocalDateTimeSerializer.class)
     private LocalDateTime updatedAt;
 
+
 }
