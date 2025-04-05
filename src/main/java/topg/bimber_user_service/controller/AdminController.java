@@ -15,14 +15,12 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin")
-@CrossOrigin(origins = "*")
 public class AdminController {
 
     private final AdminServiceImpl adminServiceImpl;
 
 
-    @GetMapping("/me/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getAdminById(@PathVariable("id") String userId) {
         UserResponseDto message = adminServiceImpl.getAdminById(userId);
         return ResponseEntity.ok(message);

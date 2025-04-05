@@ -10,7 +10,6 @@ import java.util.List;
 public interface AdminService {
     UserCreatedDto createAdmin(UserRequestDto userRequestDto);
 
-    LoginResponse login(LoginRequest loginRequest);
 
     UpdateDetailsResponse updateAdmin(UpdateDetailsRequest updateUserRequest);
 

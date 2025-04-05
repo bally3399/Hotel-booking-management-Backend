@@ -12,9 +12,10 @@ import topg.bimber_user_service.models.Role;
 public class LoginResponse {
     private String message;
     private String jwtToken;
+    private String refreshToken;
     private Role role;
-    private String firstName;
-    private String lastName;
+    private String username;
+
 
 
 }
