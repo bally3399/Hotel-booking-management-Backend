@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Try to find User
-        User user = userRepository.findByUsername(username).orElse(null);
+        User user = userRepository.findByEmail(username).orElse(null);
         if (user != null) {
             var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + Role.USER.getRole()));
             System.out.println("User Roles: " + authorities); // Debug print

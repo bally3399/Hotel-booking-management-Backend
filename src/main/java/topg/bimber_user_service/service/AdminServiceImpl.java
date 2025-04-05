@@ -3,6 +3,7 @@ package topg.bimber_user_service.service;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import topg.bimber_user_service.dto.requests.*;
 import topg.bimber_user_service.dto.responses.*;
@@ -14,7 +15,7 @@ import topg.bimber_user_service.mail.MailService;
 import topg.bimber_user_service.models.Admin;
 import topg.bimber_user_service.models.State;
 import topg.bimber_user_service.repository.AdminRepository;
-import topg.bimber_user_service.utils.JwtUtils;
+import topg.bimber_user_service.config.JwtUtils;
 
 
 import java.math.BigDecimal;
@@ -33,12 +34,15 @@ public class AdminServiceImpl implements AdminService {
     private final MailService mailService;
     private final RoomServiceImpl roomServiceImpl;
     private final HotelServiceImpl hotelServiceImpl;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public UserCreatedDto createAdmin(UserRequestDto userRequestDto) {
         validateFields(userRequestDto.getEmail(), userRequestDto.getPassword());
         doesUserExists(userRequestDto.getEmail());
         Admin admin = modelMapper.map(userRequestDto, Admin.class);
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         admin = adminRepository.save(admin);
         UserCreatedDto response = modelMapper.map(admin, UserCreatedDto.class);
         response.setMessage("Admin registered successfully");
@@ -55,41 +59,6 @@ public class AdminServiceImpl implements AdminService {
         Admin admin = adminRepository.findByEmail(email);
         if (admin != null) throw new AdminExistException(String.format("Admin with email: %s already exits", email));
     }
-
-
-
-
-    @Override
-    public LoginResponse login(LoginRequest loginRequest) {
-        String email = loginRequest.getEmail();
-        String password = loginRequest.getPassword();
-        return checkLoginDetail(email, password);
-    }
-
-
-    private LoginResponse checkLoginDetail(String email, String password) {
-        Admin optionalUser = adminRepository.findByEmail(email);
-        if (optionalUser != null){
-            if (optionalUser.getPassword().equals(password)) {
-                return loginResponseMapper(optionalUser);
-            } else {
-                throw new InvalidDetailsException("Invalid username or password");
-            }
-        } else {
-            throw new InvalidDetailsException("Invalid username or password");
-        }
-    }
-
-    private LoginResponse loginResponseMapper(Admin admin) {
-        LoginResponse loginResponse = new LoginResponse();
-        String accessToken = JwtUtils.generateAccessToken(admin.getId());
-        BeanUtils.copyProperties(admin, loginResponse);
-        loginResponse.setJwtToken(accessToken);
-        loginResponse.setMessage("Login Successful");
-        loginResponse.setRole(admin.getRole());
-        return loginResponse;
-    }
-
 
     @Override
     public UpdateDetailsResponse updateAdmin(UpdateDetailsRequest updateUserRequest) {
