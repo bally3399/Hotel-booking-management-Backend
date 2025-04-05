@@ -4,46 +4,47 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Component
+@AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtUtils jwtUtils;
-    private final UserDetailsService userDetailsService;
-
-    public JwtAuthenticationFilter(JwtUtils jwtUtils, UserDetailsService userDetailsService) {
-        this.jwtUtils = jwtUtils;
-        this.userDetailsService = userDetailsService;
-    }
-
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtUtils jwtService;
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        // Extract JWT token from the Authorization header
-        String jwt = jwtUtils.getJwtFromHeader(request);
-        if (jwt != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            try {
-                // Validate the token and extract the username
-                String username = jwtUtils.getUsernameFromToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        final String authHeader = request.getHeader("Authorization");
+        final String userEmail;
+        final String jwtToken;
 
-                if (jwtUtils.validateToken(jwt)) {
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                }
-            } catch (Exception e) {
-                System.err.println("JWT Token validation failed: " + e.getMessage());
+        if(authHeader == null || !authHeader.contains("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        jwtToken = authHeader.substring(7);
+        userEmail = jwtService.extractUsername(jwtToken);
+        if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+            if(jwtService.isTokenValid(jwtToken, userDetails)){
+                UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+                userToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(userToken);
             }
         }
         filterChain.doFilter(request, response);

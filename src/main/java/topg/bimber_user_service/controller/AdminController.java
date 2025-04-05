@@ -1,8 +1,10 @@
 package topg.bimber_user_service.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.*;
 import topg.bimber_user_service.dto.responses.*;
@@ -28,11 +30,11 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/rooms")
-    public ResponseEntity<RoomResponse> addRoom(@RequestBody RoomRequest roomRequest,
-                                                @RequestParam("files") List<String> multipartFiles) {
-        RoomResponse response = adminServiceImpl.addRoom(roomRequest, multipartFiles);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<UserResponseDto> getAdminById(@PathVariable("id") String userId) {
+        UserResponseDto message = adminServiceImpl.getAdminById(userId);
+        return ResponseEntity.ok(message);
     }
 
     @PostMapping("/hotels")

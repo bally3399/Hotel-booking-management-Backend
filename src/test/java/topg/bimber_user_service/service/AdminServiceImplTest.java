@@ -67,7 +67,6 @@ public class AdminServiceImplTest {
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setEmail("john@doe.com");
         loginRequest.setPassword("Password@123");
-        loginResponse = adminService.login(loginRequest);
     }
 
     // Existing Tests (unchanged for brevity, assuming they work as intended)

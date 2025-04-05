@@ -10,16 +10,16 @@ TRUNCATE TABLE comment CASCADE;
 
 -- Insert data into admins table
 INSERT INTO admins (id, username, email, password, created_at, updated_at, role, enabled)
-VALUES ('123e4567-e89b-12d3-a456-426614174000', 'admin_user', 'admin@example.com', 'hashed_password_here', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ADMIN', true);
+VALUES ('123e4567-e89b-12d3-a456-426614174000', 'admin_user', 'admin@example.com', '$2a$10$EHhMSQokdR5XORwFDUqcwu6nmbpokQfOXBA8FapkNFdVMrvAs3qpe', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ADMIN', true);
 
 -- Insert data into users table
 INSERT INTO users (id, username, email, password, created_at, updated_at, role, balance, enabled)
 VALUES
-    ('123e4567-e89b-12d3-a456-426614174001', 'user1', 'user1@example.com', 'hashed_password_here', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 400000, true),
-    ('123e4567-e89b-12d3-a456-426614174002', 'user2', 'user2@example.com', 'hashed_password_here', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 450000, true),
-    ('123e4567-e89b-12d3-a456-426614174003', 'user3', 'user3@example.com', 'hashed_password_here', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 450000, true),
-    ('123e4567-e89b-12d3-a456-426614174004', 'user4', 'user4@example.com', 'hashed_password_here', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 450000, true),
-    ('123e4567-e89b-12d3-a456-426614174005', 'user5', 'user5@example.com', 'hashed_password_here', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 470000, true);
+    ('123e4567-e89b-12d3-a456-426614174001', 'user1', 'user1@example.com', '$2a$10$EHhMSQokdR5XORwFDUqcwu6nmbpokQfOXBA8FapkNFdVMrvAs3qpe', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 400000, true),
+    ('123e4567-e89b-12d3-a456-426614174002', 'user2', 'user2@example.com', '$2a$10$EHhMSQokdR5XORwFDUqcwu6nmbpokQfOXBA8FapkNFdVMrvAs3qpe', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 450000, true),
+    ('123e4567-e89b-12d3-a456-426614174003', 'user3', 'user3@example.com', '$2a$10$EHhMSQokdR5XORwFDUqcwu6nmbpokQfOXBA8FapkNFdVMrvAs3qpe', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 450000, true),
+    ('123e4567-e89b-12d3-a456-426614174004', 'user4', 'user4@example.com', '$2a$10$EHhMSQokdR5XORwFDUqcwu6nmbpokQfOXBA8FapkNFdVMrvAs3qpe', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 450000, true),
+    ('123e4567-e89b-12d3-a456-426614174005', 'user5', 'user5@example.com', '$2a$10$EHhMSQokdR5XORwFDUqcwu6nmbpokQfOXBA8FapkNFdVMrvAs3qpe', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 470000, true);
 
 -- Insert data into hotel table
 INSERT INTO hotel (id, "name", state, location, description)
