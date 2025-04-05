@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/v1/sign-up").permitAll()
                         .requestMatchers("/api/v1/admin/**").permitAll()
+                        .requestMatchers("/api/v1/user/**").permitAll()
                         .requestMatchers("/api/v1/add_product").hasAnyAuthority("ADMIN"))
                 .authenticationProvider(daoAuthenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

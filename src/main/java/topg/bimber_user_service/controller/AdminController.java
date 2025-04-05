@@ -30,7 +30,7 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/me/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserResponseDto> getAdminById(@PathVariable("id") String userId) {
         UserResponseDto message = adminServiceImpl.getAdminById(userId);
