@@ -27,10 +27,9 @@ public class AuthController {
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequestDto) {
         LoginResponse message = authService.login(loginRequestDto);
         System.out.println(message.getJwtToken());
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,message));
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, message));
+
     }
-
-
     @PostMapping("/user/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
         UserCreatedDto message = userServiceImpl.createUser(userRequestDto);

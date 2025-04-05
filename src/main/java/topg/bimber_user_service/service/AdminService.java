@@ -5,6 +5,7 @@ import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.models.Admin;
 import topg.bimber_user_service.models.State;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface AdminService {
@@ -28,4 +29,30 @@ public interface AdminService {
     List<HotelDtoFilter> getHotelsByState(State state);
 
     HotelResponseDto editHotelById(Long id, HotelRequestDto updatedHotelDto);
+
+    HotelDtoFilter getHotelById(Long id);
+
+    String deleteHotelById(Long id);
+
+    List<HotelDtoFilter> getMostBookedHotelInState(State state);
+
+    List<HotelDtoFilter> getHotelsInState(State state);
+
+    List<RoomResponse> filterByPriceAndState(BigDecimal bigDecimal, BigDecimal bigDecimal1, State state);
+
+    List<RoomResponse> filterHotelRoomByType(long l, String deluxe);
+
+    RoomResponse deactivateRoomByHotelId(long hotelId, long roomId);
+
+    RoomResponse activateRoomByHotelId(long hotelId, long roomId);
+
+    List<RoomResponse> findAllAvailableHotelRooms(long roomId);
+
+    boolean isRoomAvailable(long roomId);
+
+    List<RoomResponse> findAllRoomsByHotelId(long roomId);
+
+    String deleteRoomById(long roomId);
+
+    String editRoomById(long l, RoomRequest roomRequest);
 }

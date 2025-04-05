@@ -18,6 +18,7 @@ import topg.bimber_user_service.repository.AdminRepository;
 import topg.bimber_user_service.config.JwtUtils;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static topg.bimber_user_service.utils.ValidationUtils.isValidEmail;
@@ -130,6 +131,71 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public HotelResponseDto editHotelById(Long id, HotelRequestDto updatedHotelDto) {
         return hotelServiceImpl.editHotelById(id, updatedHotelDto);
+    }
+
+    @Override
+    public HotelDtoFilter getHotelById(Long id) {
+        return hotelServiceImpl.getHotelById(id);
+    }
+
+    @Override
+    public String deleteHotelById(Long id) {
+        return hotelServiceImpl.deleteHotelById(id);
+    }
+
+    @Override
+    public List<HotelDtoFilter> getHotelsInState(State state) {
+        return hotelServiceImpl.getTotalHotelsInState(String.valueOf(state));
+    }
+
+    @Override
+    public List<RoomResponse> filterByPriceAndState(BigDecimal bigDecimal, BigDecimal bigDecimal1, State state) {
+        return roomServiceImpl.filterByPriceAndState(bigDecimal, bigDecimal1, state);
+    }
+
+    @Override
+    public List<RoomResponse> filterHotelRoomByType(long l, String deluxe) {
+        return roomServiceImpl.filterHotelRoomByType(l, deluxe);
+    }
+
+    @Override
+    public RoomResponse deactivateRoomByHotelId(long hotelId, long roomId) {
+        return roomServiceImpl.deactivateRoomByHotelId(hotelId, roomId);
+    }
+
+    @Override
+    public RoomResponse activateRoomByHotelId(long hotelId, long roomId) {
+        return roomServiceImpl.activateRoomByHotelId(hotelId, roomId);
+    }
+
+    @Override
+    public List<RoomResponse> findAllAvailableHotelRooms(long roomId) {
+        return roomServiceImpl.findAllAvailableHotelRooms(roomId);
+    }
+
+    @Override
+    public boolean isRoomAvailable(long roomId) {
+        return roomServiceImpl.isRoomAvailable(roomId);
+    }
+
+    @Override
+    public List<RoomResponse> findAllRoomsByHotelId(long roomId) {
+        return roomServiceImpl.findAllAvailableHotelRooms(roomId);
+    }
+
+    @Override
+    public String deleteRoomById(long roomId) {
+        return roomServiceImpl.deleteRoomById(roomId);
+    }
+
+    @Override
+    public String editRoomById(long l, RoomRequest roomRequest) {
+        return roomServiceImpl.editRoomById(l, roomRequest);
+    }
+
+    @Override
+    public List<HotelDtoFilter> getMostBookedHotelInState(State state) {
+        return hotelServiceImpl.getMostBookedHotelsByState(String.valueOf(state));
     }
 
 
