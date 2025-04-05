@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
+import topg.bimber_user_service.dto.requests.UserRequestDto;
 import topg.bimber_user_service.dto.responses.BaseResponse;
 import topg.bimber_user_service.dto.responses.UserResponseDto;
 import topg.bimber_user_service.models.User;
+import topg.bimber_user_service.service.UserService;
 import topg.bimber_user_service.service.UserServiceImpl;
 
 import java.math.BigDecimal;
@@ -21,13 +23,22 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userServiceImpl;
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getUserById(@PathVariable("id") String userId) {
         UserResponseDto message = userServiceImpl.getUserById(userId);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,message));
+    }
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody  UserRequestDto dto){
+        try {
+            var response = userServiceImpl.createUser(dto);
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     @PutMapping("/edit/{id}")

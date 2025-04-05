@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
         UserCreatedDto response = modelMapper.map(user, UserCreatedDto.class);
         response.setMessage("Registration successful");
-        response.setSuccess(true);
         return response;
     }
 
