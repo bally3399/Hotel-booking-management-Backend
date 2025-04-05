@@ -1,16 +1,13 @@
 package topg.bimber_user_service.service;
 
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import topg.bimber_user_service.dto.requests.RoomRequest;
 import topg.bimber_user_service.dto.responses.RoomResponse;
 import topg.bimber_user_service.exceptions.RoomNotAvailableException;
-import topg.bimber_user_service.exceptions.UserNotFoundInDb;
 import topg.bimber_user_service.models.*;
 import topg.bimber_user_service.repository.HotelRepository;
 import topg.bimber_user_service.repository.RoomPictureRepository;

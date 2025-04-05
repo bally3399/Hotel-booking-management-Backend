@@ -31,12 +31,6 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponseDto> getAdminById(@PathVariable("id") String userId) {
-        UserResponseDto message = adminServiceImpl.getAdminById(userId);
-        return ResponseEntity.ok(message);
-    }
 
     @PostMapping("/hotels")
     @PreAuthorize("hasRole('ADMIN')")

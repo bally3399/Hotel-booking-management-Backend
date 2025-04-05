@@ -8,6 +8,6 @@ import lombok.Setter;
 public class UserCreatedDto {
     private boolean success;
     private String message;
-    private Object data;
+//    private Object data;
 
 }
