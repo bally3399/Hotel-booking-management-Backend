@@ -1,10 +1,13 @@
 package topg.bimber_user_service.controller;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
+import topg.bimber_user_service.dto.responses.BaseResponse;
 import topg.bimber_user_service.dto.responses.BookingResponseDto;
 import topg.bimber_user_service.dto.responses.UserResponseDto;
 import topg.bimber_user_service.models.User;
@@ -23,21 +26,21 @@ public class UserController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getUserById(@PathVariable("id") String userId) {
-        UserResponseDto message = userServiceImpl.getUserById(userId);
+        UserResponseDto message = userService.getUserById(userId);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,message));
     }
 
     @PutMapping("/edit/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponseDto> editUserById(@Valid @RequestBody UserAndAdminUpdateDto userAndAdminUpdateDto, @PathVariable("id") String userId) {
-        UserResponseDto message = userServiceImpl.editUserById(userAndAdminUpdateDto, userId);
+        UserResponseDto message = userService.editUserById(userAndAdminUpdateDto, userId);
         return ResponseEntity.ok(message);
     }
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> deleteUserById(@PathVariable("id") String userId) {
-        String message = userServiceImpl.deleteUserById(userId);
+        String message = userService.deleteUserById(userId);
         return ResponseEntity.ok(message);
     }
 
