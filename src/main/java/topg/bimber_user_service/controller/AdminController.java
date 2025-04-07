@@ -34,7 +34,7 @@ public class AdminController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody  UserRequestDto  dto){
         var response = adminServiceImpl.createAdmin(dto);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(201).body(new BaseResponse<>(true,response));
     }
 
 
