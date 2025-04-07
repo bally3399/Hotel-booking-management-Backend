@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import topg.bimber_user_service.models.Role;
 
 @Getter
 @Setter
@@ -20,4 +21,6 @@ public class UserRequestDto {
         @NotBlank(message = "Email cannot be blank")
         @Email(message = "Email should be valid")
         private String email;
+        @NotBlank(message = "Role cannot be blank")
+        private Role role;
 }
