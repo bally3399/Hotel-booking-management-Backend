@@ -32,7 +32,7 @@ public class AdminController {
         UpdateDetailsResponse response = adminServiceImpl.updateAdmin(updateUserRequest);
         return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
     }
-    @PostMapping("/register")
+    @PostMapping("/register") 
     public ResponseEntity<?> register(@RequestBody  UserRequestDto  dto){
         var response = adminServiceImpl.createAdmin(dto);
         return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
