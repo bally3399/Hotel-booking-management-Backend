@@ -36,7 +36,6 @@ public class AdminController {
     public ResponseEntity<?> register(@RequestBody  UserRequestDto  dto){
         var response = adminServiceImpl.createAdmin(dto);
         return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
-
     }
 
 
@@ -52,6 +51,7 @@ public class AdminController {
     public ResponseEntity<?> getHotelsByState(@PathVariable State state) {
         List<HotelDtoFilter> hotels = adminServiceImpl.getHotelsByState(state);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, hotels));
+
     }
 
     @PutMapping("/hotels/{id}")
@@ -74,6 +74,7 @@ public class AdminController {
     public ResponseEntity<?> deleteHotelById(@PathVariable Long id) {
         String response = adminServiceImpl.deleteHotelById(id);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
+
     }
 
     @GetMapping("/hotels/most-booked/{state}")
@@ -85,19 +86,21 @@ public class AdminController {
 
     @GetMapping("/hotels/in-state/{state}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<HotelDtoFilter>> getHotelsInState(@PathVariable State state) {
-        List<HotelDtoFilter> hotels = adminServiceImpl.getHotelsInState(state);
-        return ResponseEntity.ok(hotels);
+    public ResponseEntity<?> getHotelsInState(@PathVariable State state) {
+        List<HotelDtoFilter> response = adminServiceImpl.getHotelsInState(state);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
+
     }
 
     @GetMapping("/filter/price-and-state")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<RoomResponse>> filterByPriceAndState(
+    public ResponseEntity<?> filterByPriceAndState(
             @RequestParam("minPrice") BigDecimal minPrice,
             @RequestParam("maxPrice") BigDecimal maxPrice,
             @RequestParam("state") State state) {
         List<RoomResponse> rooms = adminServiceImpl.filterByPriceAndState(minPrice, maxPrice, state);
-        return ResponseEntity.ok(rooms);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,rooms));
+
     }
 
     @GetMapping("/hotel/{hotelId}/type/{type}")
@@ -107,6 +110,7 @@ public class AdminController {
             @PathVariable("type") String type) {
         List<RoomResponse> rooms = adminServiceImpl.filterHotelRoomByType(hotelId, type);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, rooms));
+
     }
 
     @PatchMapping("/hotel/{hotelId}/deactivate/{roomId}")
