@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.*;
 import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.service.AdminService;
 import topg.bimber_user_service.service.AdminServiceImpl;
 
 import java.math.BigDecimal;
@@ -22,12 +23,17 @@ import static org.springframework.http.HttpStatus.OK;
 @CrossOrigin(origins = "*")
 public class AdminController {
 
-    private final AdminServiceImpl adminServiceImpl;
+    private final AdminService adminServiceImpl;
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UpdateDetailsResponse> updateAdmin(@RequestBody UpdateDetailsRequest updateUserRequest) {
         UpdateDetailsResponse response = adminServiceImpl.updateAdmin(updateUserRequest);
+        return ResponseEntity.ok(response);
+    }
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody  UserRequestDto  dto){
+        var response = adminServiceImpl.createAdmin(dto);
         return ResponseEntity.ok(response);
     }
 

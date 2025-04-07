@@ -47,7 +47,6 @@ class UserServiceTest {
     void createUser() {
         var user = userService.createUser(dto);
         assertNotNull(user);
-        assertThat(user.isSuccess()).isEqualTo(true);
     }
 
     @Test

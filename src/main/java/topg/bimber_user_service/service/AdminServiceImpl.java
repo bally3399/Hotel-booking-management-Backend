@@ -44,7 +44,6 @@ public class AdminServiceImpl implements AdminService {
         admin = adminRepository.save(admin);
         UserCreatedDto response = modelMapper.map(admin, UserCreatedDto.class);
         response.setMessage("Admin registered successfully");
-        response.setSuccess(true);
         return response;
     }
 
