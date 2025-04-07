@@ -15,6 +15,7 @@ import topg.bimber_user_service.service.AdminServiceImpl;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static io.lettuce.core.pubsub.PubSubOutput.Type.message;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -27,29 +28,29 @@ public class AdminController {
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UpdateDetailsResponse> updateAdmin(@RequestBody UpdateDetailsRequest updateUserRequest) {
+    public ResponseEntity<?> updateAdmin(@RequestBody UpdateDetailsRequest updateUserRequest) {
         UpdateDetailsResponse response = adminServiceImpl.updateAdmin(updateUserRequest);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
     }
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody  UserRequestDto  dto){
         var response = adminServiceImpl.createAdmin(dto);
-        return ResponseEntity.status(201).body(new BaseResponse<>(true,response));
+        return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
     }
 
 
     @PostMapping("/hotels")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<HotelResponseDto> createHotel(@RequestBody CreateHotelDto createHotelDto) {
+    public ResponseEntity<?> createHotel(@RequestBody CreateHotelDto createHotelDto) {
         HotelResponseDto response = adminServiceImpl.createHotel(createHotelDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
     }
 
     @GetMapping("/hotels/state/{state}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getHotelsByState(@PathVariable State state) {
         List<HotelDtoFilter> hotels = adminServiceImpl.getHotelsByState(state);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,hotels));
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, hotels));
 
     }
 
@@ -58,23 +59,21 @@ public class AdminController {
     public ResponseEntity<?> editHotelById(@PathVariable Long id,
                                                           @RequestBody HotelRequestDto updatedHotelDto) {
         HotelResponseDto response = adminServiceImpl.editHotelById(id, updatedHotelDto);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
-
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 
     @GetMapping("/hotels/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getHotelById(@PathVariable Long id) {
         HotelDtoFilter response = adminServiceImpl.getHotelById(id);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
-
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 
     @DeleteMapping("/hotels/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteHotelById(@PathVariable Long id) {
         String response = adminServiceImpl.deleteHotelById(id);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
 
     }
 
@@ -110,7 +109,7 @@ public class AdminController {
             @PathVariable("hotelId") long hotelId,
             @PathVariable("type") String type) {
         List<RoomResponse> rooms = adminServiceImpl.filterHotelRoomByType(hotelId, type);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,rooms));
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, rooms));
 
     }
 
@@ -119,8 +118,7 @@ public class AdminController {
             @PathVariable("hotelId") long hotelId,
             @PathVariable("roomId") long roomId) {
         RoomResponse response = adminServiceImpl.deactivateRoomByHotelId(hotelId, roomId);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
-
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 
     @PatchMapping("/hotel/{hotelId}/activate/{roomId}")
@@ -128,8 +126,7 @@ public class AdminController {
             @PathVariable("hotelId") long hotelId,
             @PathVariable("roomId") long roomId) {
         RoomResponse response = adminServiceImpl.activateRoomByHotelId(hotelId, roomId);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
-
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 
     @GetMapping("/hotel/{hotelId}/available")
@@ -137,8 +134,7 @@ public class AdminController {
     public ResponseEntity<?> findAllAvailableHotelRooms(
             @PathVariable("hotelId") long hotelId) {
         List<RoomResponse> rooms = adminServiceImpl.findAllAvailableHotelRooms(hotelId);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,rooms));
-
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, rooms));
     }
 
     @GetMapping("/{roomId}/availability")
@@ -146,8 +142,7 @@ public class AdminController {
     public ResponseEntity<?> isRoomAvailable(
             @PathVariable("roomId") long roomId) {
         boolean isAvailable = adminServiceImpl.isRoomAvailable(roomId);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,isAvailable));
-
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, isAvailable));
     }
 
     @GetMapping("/hotel/{hotelId}")
@@ -155,16 +150,14 @@ public class AdminController {
     public ResponseEntity<?> findAllRoomsByHotelId(
             @PathVariable("hotelId") long hotelId) {
         List<RoomResponse> rooms = adminServiceImpl.findAllRoomsByHotelId(hotelId);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,rooms));
-
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, rooms));
     }
 
     @DeleteMapping("/{roomId}")
     public ResponseEntity<?> deleteRoomById(
             @PathVariable("roomId") long roomId) {
         String response = adminServiceImpl.deleteRoomById(roomId);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
-
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 
     @PutMapping("/{roomId}")
@@ -173,8 +166,7 @@ public class AdminController {
             @PathVariable("roomId") long roomId,
             @RequestBody RoomRequest roomRequest) {
         String response = adminServiceImpl.editRoomById(roomId, roomRequest);
-        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
-
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 
 
