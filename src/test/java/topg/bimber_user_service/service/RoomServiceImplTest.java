@@ -26,7 +26,7 @@ import static topg.bimber_user_service.models.State.LAGOS;
 
 @SpringBootTest
 @Transactional
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:applications-test.properties")
 class RoomServiceImplTest {
 
     @Autowired
