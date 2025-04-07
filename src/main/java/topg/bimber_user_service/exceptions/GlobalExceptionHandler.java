@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(Exception.class)
-//    @ResponseBody
-//    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
-//        ErrorResponse errorResponse = new ErrorResponse("An error occurred", ex.getMessage());
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-//    }
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
+        ErrorResponse errorResponse = new ErrorResponse("An error occurred", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 
-//    @ExceptionHandler(IllegalArgumentException.class)
-//    @ResponseBody
-//    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-//        ErrorResponse errorResponse = new ErrorResponse("Invalid Input", ex.getMessage());
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-//    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("Invalid Input", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 }

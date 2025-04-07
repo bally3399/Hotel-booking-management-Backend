@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 @CrossOrigin(origins = "*")
 public class UserController {
 
@@ -35,69 +35,66 @@ public class UserController {
     }
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody  UserRequestDto dto){
-        try {
             var response = userService.createUser(dto);
-            return ResponseEntity.ok(response);
-        }catch (Exception e){
-            throw new IllegalArgumentException(e.getMessage());
-        }
+            return ResponseEntity.status(201).body(new BaseResponse<>(true,response));
     }
 
     @PutMapping("/edit/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UserResponseDto> editUserById(@Valid @RequestBody UserAndAdminUpdateDto userAndAdminUpdateDto, @PathVariable("id") String userId) {
+    public ResponseEntity<?> editUserById(@Valid @RequestBody UserAndAdminUpdateDto userAndAdminUpdateDto, @PathVariable("id") String userId) {
         UserResponseDto message = userService.editUserById(userAndAdminUpdateDto, userId);
-        return ResponseEntity.ok(message);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,message));
     }
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> deleteUserById(@PathVariable("id") String userId) {
+    public ResponseEntity<?> deleteUserById(@PathVariable("id") String userId) {
         String message = userService.deleteUserById(userId);
-        return ResponseEntity.ok(message);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,message));
     }
 
     @PatchMapping("/{userId}/fund")
-    public ResponseEntity<String> fundAccount(
+    public ResponseEntity<?> fundAccount(
             @PathVariable String userId,
             @RequestParam("amount") BigDecimal amount) {
         String response = userService.fundAccount(userId, amount);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
     @GetMapping("/{userId}/details")
-    public ResponseEntity<User> findById(@PathVariable String userId) {
-        User user = userService.findById(userId);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<?> findById(@PathVariable String userId) {
+        var response = userService.getUserById(userId);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
 
     @PostMapping("/bookings")
-    public ResponseEntity<BookingResponseDto> bookRoom(@RequestBody BookingRequestDto bookingRequest) {
+    public ResponseEntity<?> bookRoom(@RequestBody BookingRequestDto bookingRequest) {
         BookingResponseDto response = userService.bookRoom(bookingRequest);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
     @DeleteMapping("/bookings/{bookingId}")
-    public ResponseEntity<String> cancelBooking(
+    public ResponseEntity<?> cancelBooking(
             @PathVariable Long bookingId,
             @RequestParam("userId") String userId) {
         String response = userService.cancelBooking(bookingId, userId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
+
     }
 
     @PutMapping("/bookings/{bookingId}")
-    public ResponseEntity<BookingResponseDto> updateBooking(
+    public ResponseEntity<?> updateBooking(
             @PathVariable Long bookingId,
             @RequestBody BookingRequestDto updateRequest) {
         BookingResponseDto response = userService.updateBooking(bookingId, updateRequest);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
     @GetMapping("/bookings")
-    public ResponseEntity<List<BookingResponseDto>> listAllBookings() {
+    public ResponseEntity<?> listAllBookings() {
         List<BookingResponseDto> bookings = userService.listAllBookings();
-        return ResponseEntity.ok(bookings);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,bookings));
     }
 }
 
