@@ -14,7 +14,6 @@ import topg.bimber_user_service.dto.requests.UserRequestDto;
 import topg.bimber_user_service.dto.responses.BookingResponseDto;
 import topg.bimber_user_service.dto.responses.UserResponseDto;
 import topg.bimber_user_service.exceptions.UserNotFoundException;
-import topg.bimber_user_service.models.User;
 import topg.bimber_user_service.repository.BookingRepository;
 
 import java.math.BigDecimal;
