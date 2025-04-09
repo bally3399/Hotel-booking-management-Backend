@@ -21,7 +21,6 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin")
-@CrossOrigin(origins = "*")
 public class AdminController {
 
     private final AdminService adminServiceImpl;
@@ -45,6 +44,13 @@ public class AdminController {
         HotelResponseDto response = adminServiceImpl.createHotel(createHotelDto);
         return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
     }
+    @PostMapping("/add_room")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> addRoom(@RequestBody RoomRequest roomRequest, List<String> multipartFiles) {
+        RoomResponse response = adminServiceImpl.addRoom(roomRequest, multipartFiles);
+        return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
+    }
+
 
     @GetMapping("/hotels/state/{state}")
     @PreAuthorize("hasRole('ADMIN')")

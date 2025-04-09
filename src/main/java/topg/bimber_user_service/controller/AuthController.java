@@ -15,7 +15,6 @@ import topg.bimber_user_service.service.UserServiceImpl;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class AuthController {
     private final AdminServiceImpl adminServiceImpl;
     private final UserServiceImpl userServiceImpl;

@@ -292,7 +292,7 @@ public class AdminServiceImplTest {
 
     private Hotel createTestHotel() {
         Hotel hotel = new Hotel();
-        hotel.setId(5L); // Use a new ID to avoid conflicts with data.sql
+        hotel.setId(5L);
         hotel.setName("Test Hotel");
         hotel.setState(OSUN);
         hotel.setLocation("Test Location");
