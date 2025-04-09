@@ -21,6 +21,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin")
+@CrossOrigin(origins = "*")
 public class AdminController {
 
     private final AdminService adminServiceImpl;

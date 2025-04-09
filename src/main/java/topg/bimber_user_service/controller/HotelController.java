@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/hotel")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class HotelController {
     private final HotelServiceImpl hotelServiceImpl;
 
