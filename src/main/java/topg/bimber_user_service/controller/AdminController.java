@@ -32,7 +32,7 @@ public class AdminController {
         UpdateDetailsResponse response = adminServiceImpl.updateAdmin(updateUserRequest);
         return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
     }
-    @PostMapping("/register")
+    @PostMapping("/register") 
     public ResponseEntity<?> register(@RequestBody  UserRequestDto  dto){
         var response = adminServiceImpl.createAdmin(dto);
         return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
@@ -45,6 +45,13 @@ public class AdminController {
         HotelResponseDto response = adminServiceImpl.createHotel(createHotelDto);
         return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
     }
+    @PostMapping("/add_room")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> addRoom(@RequestBody RoomRequest roomRequest, List<String> multipartFiles) {
+        RoomResponse response = adminServiceImpl.addRoom(roomRequest, multipartFiles);
+        return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
+    }
+
 
     @GetMapping("/hotels/state/{state}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -167,6 +174,12 @@ public class AdminController {
             @RequestBody RoomRequest roomRequest) {
         String response = adminServiceImpl.editRoomById(roomId, roomRequest);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> getTotalHotelsInState(@RequestParam String state) {
+        var response = adminServiceImpl.getTotalHotelsInState(state);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
 

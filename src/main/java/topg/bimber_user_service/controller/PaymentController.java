@@ -1,4 +1,4 @@
-package com.example.stripepayment;
+package topg.bimber_user_service.controller;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -23,9 +23,9 @@ public class PaymentController {
     @PostMapping("/create-payment-intent")
     public ResponseEntity<?> createPaymentIntent(@RequestBody Map<String, Object> payload) {
         // Extract amount from the request body
-        BigDecimal amount = (BigDecimal) payload.get("amount");
+        Long amount = (Long) payload.get("amount");
 
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 1) {
+        if (amount == null || amount!=0L) {
             return ResponseEntity.badRequest().body("Invalid amount");
         }
 
