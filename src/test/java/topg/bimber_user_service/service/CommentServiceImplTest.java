@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import topg.bimber_user_service.dto.responses.CommentResponse;
 import topg.bimber_user_service.exceptions.InvalidDetailsException;
@@ -56,7 +55,7 @@ class CommentServiceImplTest {
 
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test City");
+        hotel.setLocation(Location.SWANSEA);
         hotel.setDescription("A great place to stay");
         hotel = hotelRepository.save(hotel);
         assertNotNull(hotel.getId());
@@ -100,8 +99,7 @@ class CommentServiceImplTest {
 
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(State.LAGOS);
+        hotel.setLocation(Location.BELFAST);
         hotel.setDescription("A nice hotel");
         hotelRepository.saveAndFlush(hotel);
 
@@ -140,8 +138,7 @@ class CommentServiceImplTest {
         Hotel hotel = new Hotel();
         hotel.setId(hotelId);
         hotel.setName("Empty Hotel");
-        hotel.setLocation("No Comments Location");
-        hotel.setState(State.LAGOS);
+        hotel.setLocation(Location.BELFAST);
         hotel.setDescription("No comments yet");
 
         hotelRepository.save(hotel);
@@ -157,8 +154,7 @@ class CommentServiceImplTest {
         User user =createUser();
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(State.LAGOS);
+        hotel.setLocation(Location.ABERDEEN);
         hotel.setDescription("A nice place");
         hotelRepository.save(hotel);
 
@@ -201,8 +197,7 @@ class CommentServiceImplTest {
 
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(State.LAGOS);
+        hotel.setLocation(Location.BELFAST);
         hotel.setDescription("A nice hotel");
         hotelRepository.saveAndFlush(hotel); // Ensures persistence
 
@@ -250,16 +245,14 @@ class CommentServiceImplTest {
         Hotel hotel = new Hotel();
         hotel.setId(hotelId);
         hotel.setName("Test Hotel");
-        hotel.setLocation("Location");
-        hotel.setState(State.LAGOS);
+        hotel.setLocation(Location.BELFAST);
         hotel.setDescription("A nice hotel");
         hotelRepository.save(hotel);
 
         Hotel anotherHotel = new Hotel();
         anotherHotel.setId(anotherHotelId);
         anotherHotel.setName("Another Hotel");
-        anotherHotel.setLocation("Location");
-        anotherHotel.setState(State.LAGOS);
+        anotherHotel.setLocation(Location.SWANSEA);
         anotherHotel.setDescription("A nice hotel");
         hotelRepository.save(anotherHotel);
 
@@ -284,8 +277,7 @@ class CommentServiceImplTest {
          user1 = userRepository.save(user1);
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(State.LAGOS);
+        hotel.setLocation(Location.SWANSEA);
         hotel.setDescription("A nice place to stay");
         hotel = hotelRepository.save(hotel);
 

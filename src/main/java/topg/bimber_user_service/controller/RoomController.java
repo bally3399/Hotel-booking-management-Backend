@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.RoomRequest;
 import topg.bimber_user_service.dto.responses.RoomResponse;
-import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.models.Location;
 import topg.bimber_user_service.service.RoomServiceImpl;
 
 import java.math.BigDecimal;
@@ -96,9 +96,9 @@ public class RoomController {
     public ResponseEntity<List<RoomResponse>> filterRoomsByPriceAndState(
             @RequestParam BigDecimal minPrice,
             @RequestParam BigDecimal maxPrice,
-            @RequestParam State state
+            @RequestParam Location location
     ) {
-        List<RoomResponse> response = roomServiceImpl.filterByPriceAndState(minPrice, maxPrice, state);
+        List<RoomResponse> response = roomServiceImpl.filterByPriceAndLocation(minPrice, maxPrice, location);
         return ResponseEntity.ok(response);
     }
 

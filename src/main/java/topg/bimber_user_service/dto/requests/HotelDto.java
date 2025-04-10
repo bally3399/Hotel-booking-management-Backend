@@ -1,7 +1,6 @@
 package topg.bimber_user_service.dto.requests;
 
-import topg.bimber_user_service.dto.responses.PictureResponseDto;
-import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.models.Location;
 
 import java.io.Serializable;
 import java.util.List;
@@ -9,8 +8,7 @@ import java.util.List;
 public record HotelDto(
         Long id,
         String name,
-        State state,
-        String location,
+        Location location,
         List<String> amenities,
         String description,
         List<String> pictures

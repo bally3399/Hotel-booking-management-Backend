@@ -22,12 +22,12 @@ VALUES
     ('123e4567-e89b-12d3-a456-426614174005', 'user5', 'user5@example.com', '$2a$10$EHhMSQokdR5XORwFDUqcwu6nmbpokQfOXBA8FapkNFdVMrvAs3qpe', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'USER', 470000, true);
 
 -- Insert data into hotel table
-INSERT INTO hotel (id, "name", state, location, description)
+INSERT INTO hotel (id, "name", location, description)
 VALUES
-    (1, 'Grand Royale', 'OSUN', 'Osogbo', 'A luxurious hotel located in the heart of Osogbo.'),
-    (2, 'Sunset Sands', 'OGUN', 'Abeokuta', 'A beachfront hotel offering stunning ocean views and top-notch amenities.'),
-    (3, 'Mountain Retreat', 'LAGOS', 'Ikeja', 'A cozy mountain lodge perfect for winter getaways.'),
-    (4, 'Grandiose House', 'LAGOS', 'Abule Egba', 'A cozy mountain lodge perfect for winter getaways.');
+    (1, 'Grand Royale', 'ABERDEEN', 'Granite City in the northeast, oil industry hub.'),
+    (2, 'Sunset Sands', 'BELFAST', 'Capital and largest city, known for its shipbuilding history'),
+    (3, 'Mountain Retreat', 'BIRMINGHAM', 'Second-largest city, industrial and cultural center in the Midlands.'),
+    (4, 'Grandiose House', 'MANCHESTER', 'Major industrial and cultural hub in the northwest');
 
 -- Insert data into hotel_amenities table (since amenities is an ElementCollection)
 INSERT INTO hotel_amenities (hotel_id, amenity)

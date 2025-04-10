@@ -2,17 +2,14 @@ package topg.bimber_user_service.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import topg.bimber_user_service.dto.requests.CreateHotelDto;
 import topg.bimber_user_service.dto.requests.HotelDtoFilter;
 import topg.bimber_user_service.dto.requests.HotelRequestDto;
 import topg.bimber_user_service.dto.responses.BaseResponse;
 import topg.bimber_user_service.dto.responses.HotelResponseDto;
-import topg.bimber_user_service.exceptions.*;
 import topg.bimber_user_service.service.HotelServiceImpl;
 
 import java.util.List;
@@ -34,7 +31,7 @@ public class HotelController {
 
     @GetMapping("/state/{state}")
     public ResponseEntity<?> getHotelsByState(@PathVariable String state) {
-            List<HotelDtoFilter> hotels = hotelServiceImpl.getHotelsByState(state);
+            List<HotelDtoFilter> hotels = hotelServiceImpl.getHotelsByLocation(state);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,hotels));
     }
 
@@ -56,14 +53,14 @@ public class HotelController {
 
     @GetMapping("/count")
     public ResponseEntity<?> getTotalHotelsInState(@RequestParam String state) {
-            var response = hotelServiceImpl.getTotalHotelsInState(state);
+            var response = hotelServiceImpl.getTotalHotelsByLocation(state);
             return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
 
     @GetMapping("/most-booked/{state}")
     public ResponseEntity<?> getMostBookedHotelsByState(@PathVariable String state) {
-            List<HotelDtoFilter> hotels = hotelServiceImpl.getMostBookedHotelsByState(state);
+            List<HotelDtoFilter> hotels = hotelServiceImpl.getMostBookedHotelsByLocation(state);
             return ResponseEntity.status(200).body(new BaseResponse<>(true,hotels));
     }
 
