@@ -147,6 +147,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public List<HotelDtoFilter> getTotalHotelsInState(String state) {
+        return hotelServiceImpl.getTotalHotelsInState(state);
+    }
+
+    @Override
     public List<RoomResponse> filterByPriceAndState(BigDecimal bigDecimal, BigDecimal bigDecimal1, State state) {
         return roomServiceImpl.filterByPriceAndState(bigDecimal, bigDecimal1, state);
     }

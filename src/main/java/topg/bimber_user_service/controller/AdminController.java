@@ -176,5 +176,11 @@ public class AdminController {
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<?> getTotalHotelsInState(@RequestParam String state) {
+        var response = adminServiceImpl.getTotalHotelsInState(state);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
+    }
+
 
 }
