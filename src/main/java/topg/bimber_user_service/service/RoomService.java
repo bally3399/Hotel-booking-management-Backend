@@ -1,9 +1,8 @@
 package topg.bimber_user_service.service;
 
-import org.springframework.web.multipart.MultipartFile;
 import topg.bimber_user_service.dto.requests.RoomRequest;
 import topg.bimber_user_service.dto.responses.RoomResponse;
-import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.models.Location;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,6 +17,6 @@ public interface RoomService {
     RoomResponse deactivateRoomByHotelId(Long hotelId, Long roomId);
     RoomResponse activateRoomByHotelId(Long hotelId, Long roomId);
     List<RoomResponse> filterHotelRoomByType(Long hotelId, String type);
-    List<RoomResponse> filterByPriceAndState(BigDecimal minPrice, BigDecimal maxPrice, State state);
+    List<RoomResponse> filterByPriceAndLocation(BigDecimal minPrice, BigDecimal maxPrice, Location location);
 
 }

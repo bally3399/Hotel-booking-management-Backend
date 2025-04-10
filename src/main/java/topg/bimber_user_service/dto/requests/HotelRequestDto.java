@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import topg.bimber_user_service.models.Room;
 import topg.bimber_user_service.models.Comment;
-import topg.bimber_user_service.models.State;
-import org.springframework.web.multipart.MultipartFile;
+import topg.bimber_user_service.models.Location;
 
 import java.util.List;
 
@@ -16,8 +15,7 @@ import java.util.List;
 @Builder
 public class HotelRequestDto{
         private String name;
-        private State state;
-        private String location;
+        private Location location;
         private String description;
         private List<String> amenities;
         private List<Room> rooms;

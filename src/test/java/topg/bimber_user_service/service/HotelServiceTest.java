@@ -1,7 +1,6 @@
 package topg.bimber_user_service.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.processing.SQL;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,7 @@ import topg.bimber_user_service.dto.requests.HotelDtoFilter;
 import topg.bimber_user_service.dto.requests.HotelRequestDto;
 import topg.bimber_user_service.dto.responses.HotelResponseDto;
 import topg.bimber_user_service.exceptions.InvalidUserInputException;
-import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.models.Location;
 
 import java.util.List;
 
@@ -34,8 +33,7 @@ class HotelServiceTest {
                 .amenities(List.of("Gym", "club house", "pool"))
                 .description("description")
                 .pictures(List.of("picture1", "picture2","picture3"))
-                .location("Lagos Island")
-                .state(State.LAGOS)
+               .location(Location.BELFAST)
                 .build();
 
     }
@@ -47,8 +45,8 @@ class HotelServiceTest {
     }
 
     @Test
-    void getHotelsByState() {
-        List<HotelDtoFilter> response = hotelService.getHotelsByState("LAGOS");
+    void getHotelsByLocation() {
+        List<HotelDtoFilter> response = hotelService.getHotelsByLocation("LAGOS");
         assertNotNull(response);
         assertThat(response.size()).isEqualTo(2);
     }
@@ -79,15 +77,15 @@ class HotelServiceTest {
     }
 
     @Test
-    void getTotalHotelsInState() {
-        List<HotelDtoFilter> response  = hotelService.getTotalHotelsInState("LAGOS");
+    void getTotalHotelsByLocation() {
+        List<HotelDtoFilter> response  = hotelService.getTotalHotelsByLocation("LAGOS");
         assertThat(response.size()).isEqualTo(2);
 
     }
 
     @Test
-    void getMostBookedHotelsByState() {
-        var response = hotelService.getMostBookedHotelsByState("LAGOS");
+    void getMostBookedHotelsByLocation() {
+        var response = hotelService.getMostBookedHotelsByLocation("LAGOS");
         assertThat(response.size()).isEqualTo(0);
     }
 }
