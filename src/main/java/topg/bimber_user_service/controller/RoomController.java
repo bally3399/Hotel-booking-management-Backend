@@ -28,7 +28,7 @@ public class RoomController {
             @RequestPart("roomRequest") @Valid RoomRequest roomRequest,
             @RequestPart(value = "pictures", required = false) List<String> pictures) {
 
-        RoomResponse roomResponse = roomServiceImpl.createRoom(roomRequest, pictures);
+        RoomResponse roomResponse = roomServiceImpl.createRoom(roomRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(roomResponse);
     }
 

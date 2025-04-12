@@ -105,8 +105,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public RoomResponse addRoom(RoomRequest roomRequest, List<String> multipartFiles) {
-        return roomServiceImpl.createRoom(roomRequest, multipartFiles);
+    public RoomResponse addRoom(RoomRequest roomRequest) {
+        return roomServiceImpl.createRoom(roomRequest);
     }
 
     @Override
