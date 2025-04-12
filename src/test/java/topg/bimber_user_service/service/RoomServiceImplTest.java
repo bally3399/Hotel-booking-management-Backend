@@ -49,6 +49,7 @@ class RoomServiceImplTest {
         request.setRoomType(RoomType.DELUXE);
         request.setPrice(new BigDecimal("50000.00"));
         request.setIsAvailable(true);
+        request.setPictures(List.of("picture1","picture2", "picture3"));
 
         MockMultipartFile mockFile = new MockMultipartFile(
                 "file",
@@ -57,7 +58,7 @@ class RoomServiceImplTest {
                 new byte[10]
         );
 
-        RoomResponse response = roomServiceImpl.createRoom(request, List.of("picture1","picture2", "picture3"));
+        RoomResponse response = roomServiceImpl.createRoom(request);
 
         assertNotNull(response);
         assertEquals(RoomType.DELUXE, response.getRoomType());
