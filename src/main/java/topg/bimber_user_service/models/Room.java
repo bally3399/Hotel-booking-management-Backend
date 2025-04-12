@@ -42,7 +42,7 @@ public class Room {
     private List<Booking> bookings = new ArrayList<>();
 
     @ElementCollection
-    @CollectionTable(name = "room_pictures", joinColumns = @JoinColumn(name = "room_id"))
+    @CollectionTable(name = "rooms", joinColumns = @JoinColumn(name = "room_id"))
     @Column(name = "room_picture")
     @JsonSetter(nulls = Nulls.AS_EMPTY)
     private List<String> pictures = new ArrayList<>();
