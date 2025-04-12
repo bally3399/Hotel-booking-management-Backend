@@ -20,7 +20,7 @@ public interface AdminService {
 
     void deleteAll();
 
-    RoomResponse addRoom(RoomRequest roomRequest, List<String> multipartFiles);
+    RoomResponse addRoom(RoomRequest roomRequest);
 
     HotelResponseDto createHotel(CreateHotelDto createHotelDto);
 

@@ -41,8 +41,8 @@ public class AdminController {
     }
     @PostMapping("/add_room")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> addRoom(@RequestBody RoomRequest roomRequest, List<String> multipartFiles) {
-        RoomResponse response = adminServiceImpl.addRoom(roomRequest, multipartFiles);
+    public ResponseEntity<?> addRoom(@RequestBody RoomRequest roomRequest) {
+        RoomResponse response = adminServiceImpl.addRoom(roomRequest);
         return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
     }
 
