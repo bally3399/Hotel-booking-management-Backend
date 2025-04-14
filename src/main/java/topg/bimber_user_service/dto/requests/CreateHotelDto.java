@@ -3,7 +3,7 @@ package topg.bimber_user_service.dto.requests;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.models.Location;
 
 import java.util.List;
 @Getter
@@ -11,9 +11,8 @@ import java.util.List;
 @Builder
 public class CreateHotelDto {
     private String name;
-    private State state;
+    private Location location;
     private String description;
-    private String location;
     private List<String> amenities;
     private List<String> pictures;
 }
