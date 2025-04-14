@@ -139,7 +139,7 @@ public class HotelServiceImpl implements HotelService {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new InvalidUserInputException("Id not found"));
 
-        hotelRepository.delete(hotel);
+        hotelRepository.deleteById(id);
         return hotel.getName() + " located at " + hotel.getLocation() + " has been deleted";
     }
 
