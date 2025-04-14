@@ -8,7 +8,7 @@ public record HotelDtoFilter(
         Long id,
         String name,
         State state,
-        String location,// Adding state to match the updated hotel model
+        String location,
         List<String> amenities,
         String description,
         List<String> pictureUrls
