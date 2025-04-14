@@ -63,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/register").permitAll()
                         .requestMatchers("/api/v1/users/**").hasAnyAuthority("USER")
                         .requestMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/v1/hotel/**").hasAnyAuthority("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .build();
