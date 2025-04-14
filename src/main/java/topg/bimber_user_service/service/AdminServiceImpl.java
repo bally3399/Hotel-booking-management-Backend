@@ -105,6 +105,16 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public HotelDtoFilter findByName(String name) {
+        return hotelServiceImpl.findByName(name);
+    }
+
+    @Override
+    public List<HotelDtoFilter> getAllHotels() {
+        return hotelServiceImpl.getAllHotels();
+    }
+
+    @Override
     public RoomResponse addRoom(RoomRequest roomRequest) {
         return roomServiceImpl.createRoom(roomRequest);
     }
