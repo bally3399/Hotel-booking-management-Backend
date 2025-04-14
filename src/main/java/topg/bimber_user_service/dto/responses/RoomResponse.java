@@ -21,7 +21,6 @@ public class RoomResponse{
        private BigDecimal price;
        private boolean isAvailable;
        private List<String> pictureUrls;
-       private Hotel hotel;
 
 }
 
