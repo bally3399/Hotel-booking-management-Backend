@@ -69,6 +69,19 @@ public class AdminController {
         HotelDtoFilter response = adminServiceImpl.getHotelById(id);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
+    @GetMapping("/hotels/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getAllHotels() {
+        List<HotelDtoFilter> response = adminServiceImpl.getAllHotels();
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
+    }
+
+    @GetMapping("/hotels/name")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getHotelByName(@RequestBody String name) {
+        HotelDtoFilter response = adminServiceImpl.findByName(name);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
+    }
 
     @DeleteMapping("/hotels/{id}")
     @PreAuthorize("hasRole('ADMIN')")
