@@ -13,6 +13,7 @@ public interface RoomService {
     String deleteRoomById(Long id);
     List<RoomResponse> findAllRoomsByHotelId(Long hotelId);
     boolean isRoomAvailable(Long id);
+    List<RoomResponse> getAllRooms ();
     List<RoomResponse> findAllAvailableHotelRooms(Long hotelId);
     RoomResponse deactivateRoomByHotelId(Long hotelId, Long roomId);
     RoomResponse activateRoomByHotelId(Long hotelId, Long roomId);

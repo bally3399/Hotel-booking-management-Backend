@@ -53,8 +53,7 @@ public class RoomServiceImpl implements RoomService {
                         savedRoom.getRoomType(),
                         savedRoom.getPrice(),
                         savedRoom.isAvailable(),
-                        savedRoom.getPictures(),
-                        savedRoom.getHotel()
+                        savedRoom.getPictures()
 
                 );
     }
@@ -98,8 +97,7 @@ public class RoomServiceImpl implements RoomService {
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
-                room.getPictures(),
-                room.getHotel()
+                room.getPictures()
         )).collect(Collectors.toList());
     }
 
@@ -109,6 +107,19 @@ public class RoomServiceImpl implements RoomService {
         return roomRepository.findById(id)
                 .map(Room::isAvailable)
                 .orElse(false);
+    }
+
+    @Override
+    public List<RoomResponse> getAllRooms() {
+        List<Room> rooms = roomRepository.findAll();
+
+        return rooms.stream().map(room -> new RoomResponse(
+                room.getId(),
+                room.getRoomType(),
+                room.getPrice(),
+                room.isAvailable(),
+                room.getPictures()
+        )).collect(Collectors.toList());
     }
 
     @Override
@@ -123,8 +134,7 @@ public class RoomServiceImpl implements RoomService {
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
-                room.getPictures(),
-                room.getHotel()
+                room.getPictures()
         )).collect(Collectors.toList());
     }
 
@@ -145,8 +155,7 @@ public class RoomServiceImpl implements RoomService {
                 updatedRoom.getRoomType(),
                 updatedRoom.getPrice(),
                 updatedRoom.isAvailable(),
-                updatedRoom.getPictures(),
-                updatedRoom.getHotel()
+                updatedRoom.getPictures()
         );
     }
 
@@ -168,8 +177,7 @@ public class RoomServiceImpl implements RoomService {
                 updatedRoom.getRoomType(),
                 updatedRoom.getPrice(),
                 updatedRoom.isAvailable(),
-                updatedRoom.getPictures(),
-                updatedRoom.getHotel()
+                updatedRoom.getPictures()
         );
     }
 
@@ -192,8 +200,7 @@ public class RoomServiceImpl implements RoomService {
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
-                room.getPictures(),
-                room.getHotel()
+                room.getPictures()
         )).collect(Collectors.toList());
     }
 
@@ -206,8 +213,7 @@ public class RoomServiceImpl implements RoomService {
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
-                room.getPictures(),
-                room.getHotel()
+                room.getPictures()
         )).collect(Collectors.toList());
     }
 
