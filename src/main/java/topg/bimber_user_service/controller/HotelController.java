@@ -49,6 +49,17 @@ public class HotelController {
             HotelDtoFilter hotel = hotelServiceImpl.getHotelById(id);
             return ResponseEntity.status(200).body(new BaseResponse<>(true,hotel));
     }
+    @GetMapping("/hotels/{name}")
+    public ResponseEntity<?> getHotelByName(@PathVariable("name") String name) {
+            HotelDtoFilter hotel = hotelServiceImpl.findByName(name);
+            return ResponseEntity.status(200).body(new BaseResponse<>(true,hotel));
+    }
+
+ @GetMapping("/hotels/")
+    public ResponseEntity<?> getHotelByName() {
+            var hotels = hotelServiceImpl.getAllHotels();
+            return ResponseEntity.status(200).body(new BaseResponse<>(true,hotels));
+    }
 
 
     @GetMapping("/count")

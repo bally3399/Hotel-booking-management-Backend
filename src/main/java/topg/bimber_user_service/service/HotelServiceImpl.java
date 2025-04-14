@@ -109,6 +109,30 @@ public class HotelServiceImpl implements HotelService {
 
     }
 
+    @Override
+    public HotelDtoFilter findByName(String name) {
+        Hotel hotel = hotelRepository.findByName(name).orElseThrow(()->new IllegalStateException("Hotel With Name Not Found"));
+        return modelMapper.map(hotel,HotelDtoFilter.class);
+    }
+
+    @Override
+    public List<HotelDtoFilter> getAllHotels() {
+        List<Hotel> hotels = hotelRepository.findAll();
+        return  hotels.stream()
+                .map(hotel -> {
+                    List<String> pictureUrls = hotel.getPictures();
+                    return new HotelDtoFilter(
+                            hotel.getId(),
+                            hotel.getName(),
+                            hotel.getLocation(),
+                            hotel.getAmenities(),
+                            hotel.getDescription(),
+                            pictureUrls
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public String deleteHotelById(Long id) {

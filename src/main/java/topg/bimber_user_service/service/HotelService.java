@@ -12,6 +12,8 @@ public interface HotelService {
     List<HotelDtoFilter> getHotelsByLocation(String stateName);
     HotelResponseDto editHotelById(Long id, HotelRequestDto hotelRequestDto);
     HotelDtoFilter getHotelById(Long id);
+    HotelDtoFilter findByName(String name);
+    List<HotelDtoFilter> getAllHotels();
     String deleteHotelById(Long id);
     List<HotelDtoFilter> getTotalHotelsByLocation(String state);
 
