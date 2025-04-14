@@ -49,7 +49,7 @@ public class HotelController {
             HotelDtoFilter hotel = hotelServiceImpl.getHotelById(id);
             return ResponseEntity.status(200).body(new BaseResponse<>(true,hotel));
     }
-    @GetMapping("/hotels/{name}")
+    @GetMapping("/{name}")
     public ResponseEntity<?> getHotelByName(@PathVariable("name") String name) {
             HotelDtoFilter hotel = hotelServiceImpl.findByName(name);
             return ResponseEntity.status(200).body(new BaseResponse<>(true,hotel));
