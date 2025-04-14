@@ -19,6 +19,8 @@ public interface AdminService {
     String deleteAdminById(String adminId);
 
     void deleteAll();
+    HotelDtoFilter findByName(String name);
+    List<HotelDtoFilter> getAllHotels();
 
     RoomResponse addRoom(RoomRequest roomRequest);
 
