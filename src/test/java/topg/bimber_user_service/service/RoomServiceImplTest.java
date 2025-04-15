@@ -8,6 +8,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import topg.bimber_user_service.dto.requests.RoomRequest;
+import topg.bimber_user_service.dto.responses.DeleteRoomResponse;
+import topg.bimber_user_service.dto.responses.EditRoomResponse;
 import topg.bimber_user_service.dto.responses.NewRoomResponse;
 import topg.bimber_user_service.dto.responses.RoomResponse;
 import topg.bimber_user_service.exceptions.RoomNotAvailableException;
@@ -133,18 +135,22 @@ class RoomServiceImplTest {
         room.setAvailable(true);
         room = roomRepository.save(room);
 
-        String result = roomServiceImpl.deleteRoomById(room.getId());
+        DeleteRoomResponse result = roomServiceImpl.deleteRoomById(room.getId());
 
-        assertEquals("Room deleted successfully", result);
+        assertEquals("Room deleted successfully", result.getMessage());
+        assertTrue(result.isSuccess());
         assertFalse(roomRepository.findById(room.getId()).isPresent());
     }
+
 
     @Test
     @DisplayName("Should return 'Room not found' when trying to delete a non-existent room")
     public void shouldReturnRoomNotFoundWhenDeletingNonExistentRoom() {
-        String result = roomServiceImpl.deleteRoomById(999L);
-        assertEquals("Room not found", result);
+        DeleteRoomResponse result = roomServiceImpl.deleteRoomById(999L);
+        assertEquals("Room not found", result.getMessage());
+        assertFalse(result.isSuccess());
     }
+
 
     @Test
     @DisplayName("Should activate a room successfully")
@@ -325,15 +331,17 @@ class RoomServiceImplTest {
         updateRequest.setPrice(BigDecimal.valueOf(80000.0));
         updateRequest.setIsAvailable(false);
 
-        String response = roomServiceImpl.editRoomById(roomId, updateRequest);
+        EditRoomResponse response = roomServiceImpl.editRoomById(roomId, updateRequest);
 
         Room updatedRoom = roomRepository.findById(roomId).orElseThrow();
 
-        assertEquals("Room updated successfully", response);
+        assertEquals("Room updated successfully", response.getMessage());
+        assertTrue(response.isSuccess());
         assertEquals(RoomType.DOUBLE, updatedRoom.getRoomType());
-        assertEquals(Double.valueOf(80000.0), Double.valueOf(String.valueOf(updatedRoom.getPrice())));
+        assertEquals(0, BigDecimal.valueOf(80000.0).compareTo(updatedRoom.getPrice()));
         assertFalse(updatedRoom.isAvailable());
     }
+
 
 
     @Test
