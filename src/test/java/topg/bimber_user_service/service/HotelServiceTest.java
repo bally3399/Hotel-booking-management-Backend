@@ -46,7 +46,7 @@ class HotelServiceTest {
 
     @Test
     void getHotelsByLocation() {
-        List<HotelDtoFilter> response = hotelService.getHotelsByLocation("LAGOS");
+        List<HotelDtoFilter> response = hotelService.getHotelsByLocation(Location.BELFAST);
         assertNotNull(response);
         assertThat(response.size()).isEqualTo(2);
     }
@@ -78,7 +78,7 @@ class HotelServiceTest {
 
     @Test
     void getTotalHotelsByLocation() {
-        List<HotelDtoFilter> response  = hotelService.getTotalHotelsByLocation("LAGOS");
+        List<HotelDtoFilter> response  = hotelService.getTotalHotelsByLocation(Location.BELFAST);
         assertThat(response.size()).isEqualTo(2);
 
     }

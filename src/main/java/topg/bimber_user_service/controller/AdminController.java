@@ -194,8 +194,8 @@ public class AdminController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<?> getTotalHotelsByLocation(@RequestParam String state) {
-        var response = adminServiceImpl.getTotalHotelsByLocation(state);
+    public ResponseEntity<?> getTotalHotelsByLocation(@RequestParam Location location) {
+        var response = adminServiceImpl.getTotalHotelsByLocation(location);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
