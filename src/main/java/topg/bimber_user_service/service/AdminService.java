@@ -38,7 +38,7 @@ public interface AdminService {
 
     List<HotelDtoFilter> getMostBookedHotelByLocation(Location location);
 
-    List<HotelDtoFilter> getTotalHotelsByLocation(String state);
+    List<HotelDtoFilter> getTotalHotelsByLocation(Location location);
 
 
     List<RoomResponse> filterByPriceAndLocation(BigDecimal bigDecimal, BigDecimal bigDecimal1, Location location);
