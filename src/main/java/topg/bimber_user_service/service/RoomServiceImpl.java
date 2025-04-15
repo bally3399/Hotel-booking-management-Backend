@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import topg.bimber_user_service.dto.requests.RoomRequest;
+import topg.bimber_user_service.dto.responses.NewRoomResponse;
 import topg.bimber_user_service.dto.responses.RoomResponse;
 import topg.bimber_user_service.exceptions.RoomNotAvailableException;
 import topg.bimber_user_service.models.*;
@@ -85,13 +86,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomResponse> findAllRoomsByHotelId(Long hotelId) {
+    public List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId) {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
 
         List<Room> rooms = roomRepository.findByHotelId(hotelId);
 
-        return rooms.stream().map(room -> new RoomResponse(
+        return rooms.stream().map(room -> new NewRoomResponse(
                 room.getId(),
                 room.getRoomType(),
                 room.getPrice(),

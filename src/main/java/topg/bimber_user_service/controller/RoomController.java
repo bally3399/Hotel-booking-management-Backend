@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.RoomRequest;
+import topg.bimber_user_service.dto.responses.NewRoomResponse;
 import topg.bimber_user_service.dto.responses.RoomResponse;
 import topg.bimber_user_service.models.Location;
 import topg.bimber_user_service.service.RoomServiceImpl;
@@ -24,7 +25,7 @@ public class RoomController {
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RoomResponse> createRoom(
+    public ResponseEntity<?> createRoom(
             @RequestPart("roomRequest") @Valid RoomRequest roomRequest,
             @RequestPart(value = "pictures", required = false) List<String> pictures) {
 
@@ -34,13 +35,13 @@ public class RoomController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> editRoomById(@PathVariable Long id, @RequestBody RoomRequest roomRequest) {
+    public ResponseEntity<?> editRoomById(@PathVariable Long id, @RequestBody RoomRequest roomRequest) {
         String response = roomServiceImpl.editRoomById(id, roomRequest);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteRoomById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteRoomById(@PathVariable Long id) {
         String response = roomServiceImpl.deleteRoomById(id);
         if (response.equals("Room deleted successfully")) {
             return ResponseEntity.ok(response);
@@ -51,24 +52,24 @@ public class RoomController {
 
 
     @GetMapping("/hotel/{hotelId}")
-    public ResponseEntity<List<RoomResponse>> findAllRoomsByHotelId(@PathVariable Long hotelId) {
-        List<RoomResponse> rooms = roomServiceImpl.findAllRoomsByHotelId(hotelId);
+    public ResponseEntity<?> findAllRoomsByHotelId(@PathVariable Long hotelId) {
+        List<NewRoomResponse> rooms = roomServiceImpl.findAllRoomsByHotelId(hotelId);
         return ResponseEntity.ok(rooms);
     }
     @GetMapping("/")
-    public ResponseEntity<List<RoomResponse>> findAllRoomsByHotelId() {
+    public ResponseEntity<?> findAllRoomsByHotelId() {
         List<RoomResponse> rooms = roomServiceImpl.getAllRooms();
         return ResponseEntity.ok(rooms);
     }
 
     @GetMapping("/hotel/{hotelId}/available")
-    public ResponseEntity<List<RoomResponse>> findAllAvailableHotelRooms(@PathVariable Long hotelId) {
+    public ResponseEntity<?> findAllAvailableHotelRooms(@PathVariable Long hotelId) {
         List<RoomResponse> availableRooms = roomServiceImpl.findAllAvailableHotelRooms(hotelId);
         return ResponseEntity.ok(availableRooms);
     }
 
     @PutMapping("/hotel/{hotelId}/room/{roomId}/deactivate")
-    public ResponseEntity<RoomResponse> deactivateRoom(
+    public ResponseEntity<?> deactivateRoom(
             @PathVariable Long hotelId,
             @PathVariable Long roomId
     ) {
@@ -79,7 +80,7 @@ public class RoomController {
 
 
     @PutMapping("/hotel/{hotelId}/room/{roomId}/activate")
-    public ResponseEntity<RoomResponse> activateRoom(
+    public ResponseEntity<?> activateRoom(
             @PathVariable Long hotelId,
             @PathVariable Long roomId
     ) {
@@ -89,7 +90,7 @@ public class RoomController {
 
 
     @GetMapping("/hotel/{hotelId}/filter")
-    public ResponseEntity<List<RoomResponse>> filterRoomsByType(
+    public ResponseEntity<?> filterRoomsByType(
             @PathVariable Long hotelId,
             @RequestParam String type
     ) {
@@ -98,7 +99,7 @@ public class RoomController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<RoomResponse>> filterRoomsByPriceAndState(
+    public ResponseEntity<?> filterRoomsByPriceAndState(
             @RequestParam BigDecimal minPrice,
             @RequestParam BigDecimal maxPrice,
             @RequestParam Location location

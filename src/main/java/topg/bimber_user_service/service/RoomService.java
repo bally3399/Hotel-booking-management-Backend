@@ -1,6 +1,7 @@
 package topg.bimber_user_service.service;
 
 import topg.bimber_user_service.dto.requests.RoomRequest;
+import topg.bimber_user_service.dto.responses.NewRoomResponse;
 import topg.bimber_user_service.dto.responses.RoomResponse;
 import topg.bimber_user_service.models.Location;
 
@@ -11,7 +12,7 @@ public interface RoomService {
     RoomResponse createRoom(RoomRequest roomRequest);
     String editRoomById(Long id, RoomRequest roomRequest);
     String deleteRoomById(Long id);
-    List<RoomResponse> findAllRoomsByHotelId(Long hotelId);
+    List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId);
     boolean isRoomAvailable(Long id);
     List<RoomResponse> getAllRooms ();
     List<RoomResponse> findAllAvailableHotelRooms(Long hotelId);
