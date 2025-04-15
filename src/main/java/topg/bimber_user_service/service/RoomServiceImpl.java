@@ -54,7 +54,6 @@ public class RoomServiceImpl implements RoomService {
                         savedRoom.getPrice(),
                         savedRoom.isAvailable(),
                         savedRoom.getPictures()
-
                 );
     }
 
