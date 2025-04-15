@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
 import topg.bimber_user_service.dto.requests.UserRequestDto;
-import topg.bimber_user_service.dto.responses.BaseResponse;
-import topg.bimber_user_service.dto.responses.BookingResponseDto;
-import topg.bimber_user_service.dto.responses.UserResponseDto;
+import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.models.User;
 import topg.bimber_user_service.service.UserService;
 
@@ -96,6 +94,21 @@ public class UserController {
         List<BookingResponseDto> bookings = userService.listAllBookings();
         return ResponseEntity.status(200).body(new BaseResponse<>(true,bookings));
     }
+
+    @GetMapping("/all-rooms")
+    public ResponseEntity<?> getAllRooms() {
+        List<RoomResponse> bookings = userService.getAllRooms();
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,bookings));
+    }
+
+    @GetMapping("/rooms/hotelId")
+    public ResponseEntity<?> findAllRoomsByHotelId(@RequestBody Long hotelId) {
+        List<NewRoomResponse> bookings = userService.findAllRoomsByHotelId(hotelId);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,bookings));
+    }
+
+
+
 }
 
 

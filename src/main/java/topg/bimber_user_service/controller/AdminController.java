@@ -98,13 +98,23 @@ public class AdminController {
         return ResponseEntity.ok(hotels);
     }
 
-//    @GetMapping("/hotels/in-state/{location}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<?> getHotelsByLocation(@PathVariable Location location) {
-//        List<HotelDtoFilter> response = adminServiceImpl.getHotelsByLocation(location);
-//        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
-//
-//    }
+    @GetMapping("/rooms/hotelId")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> findAllRoomsByHotelId(@RequestBody Long hotelId) {
+        List<NewRoomResponse> response = adminServiceImpl.findAllRoomsByHotelId(hotelId);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
+
+    }
+
+    @GetMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getAllRooms() {
+        List<RoomResponse> response = adminServiceImpl.getAllRooms();
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
+
+    }
+
+
 
     @GetMapping("/filter/price-and-state")
     @PreAuthorize("hasRole('ADMIN')")
