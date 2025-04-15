@@ -2,10 +2,8 @@ package topg.bimber_user_service.service;
 
 import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
-import topg.bimber_user_service.dto.responses.BookingResponseDto;
-import topg.bimber_user_service.dto.responses.UserCreatedDto;
+import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.dto.requests.UserRequestDto;
-import topg.bimber_user_service.dto.responses.UserResponseDto;
 import topg.bimber_user_service.models.User;
 
 import java.math.BigDecimal;
@@ -28,4 +26,7 @@ public interface UserService {
     BookingResponseDto updateBooking(Long bookingId, BookingRequestDto updateRequest);
 
     List<BookingResponseDto> listAllBookings();
+    List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId);
+    boolean isRoomAvailable(Long id);
+    List<RoomResponse> getAllRooms ();
 }

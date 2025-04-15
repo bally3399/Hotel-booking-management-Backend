@@ -58,4 +58,7 @@ public interface AdminService {
     String deleteRoomById(long roomId);
 
     String editRoomById(long l, RoomRequest roomRequest);
+
+    List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId);
+    List<RoomResponse> getAllRooms ();
 }
