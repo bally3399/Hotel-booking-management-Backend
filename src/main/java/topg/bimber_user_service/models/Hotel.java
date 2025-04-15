@@ -27,8 +27,7 @@ public class Hotel {
     @Column(unique = true, nullable = false)
     private String name;
     @Enumerated(EnumType.STRING)
-    private State state;
-    private String location;
+    private Location location;
 
     @ElementCollection
     @CollectionTable(name = "hotel_amenities", joinColumns = @JoinColumn(name = "hotel_id"))

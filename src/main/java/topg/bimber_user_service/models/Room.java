@@ -1,5 +1,7 @@
 package topg.bimber_user_service.models;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -9,9 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,22 +39,24 @@ public class Room {
     private Hotel hotel;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Booking> bookings;
-//
-//    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<RoomPicture> pictures;
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
+    private List<Booking> bookings = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "rooms", joinColumns = @JoinColumn(name = "room_id"))
     @Column(name = "room_picture")
-    private List<String> pictures;
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
+    private List<String> pictures = new ArrayList<>();
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using= LocalDateTimeSerializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createdAt;
+
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using= LocalDateTimeSerializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime updatedAt;
+
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -61,5 +67,4 @@ public class Room {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
 }

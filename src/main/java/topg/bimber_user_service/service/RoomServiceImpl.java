@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import topg.bimber_user_service.dto.requests.RoomRequest;
+import topg.bimber_user_service.dto.responses.NewRoomResponse;
 import topg.bimber_user_service.dto.responses.RoomResponse;
 import topg.bimber_user_service.exceptions.RoomNotAvailableException;
 import topg.bimber_user_service.models.*;
@@ -13,9 +14,7 @@ import topg.bimber_user_service.repository.HotelRepository;
 import topg.bimber_user_service.repository.RoomPictureRepository;
 import topg.bimber_user_service.repository.RoomRepository;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -35,7 +34,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Transactional
     @Override
-    public RoomResponse createRoom(RoomRequest roomRequest, List<String> pictures) {
+    public RoomResponse createRoom(RoomRequest roomRequest) {
         Hotel hotel = hotelRepository.findById(roomRequest.getHotelId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
 
@@ -44,7 +43,7 @@ public class RoomServiceImpl implements RoomService {
                 .roomType(roomRequest.getRoomType())
                 .price(roomRequest.getPrice())
                 .available(roomRequest.getIsAvailable())
-                .pictures(pictures)
+                .pictures(roomRequest.getPictures())
                 .build();
 
         Room savedRoom = roomRepository.save(room);
@@ -55,9 +54,7 @@ public class RoomServiceImpl implements RoomService {
                         savedRoom.getRoomType(),
                         savedRoom.getPrice(),
                         savedRoom.isAvailable(),
-                        savedRoom.getPictures(),
-                        savedRoom.getHotel()
-
+                        savedRoom.getPictures()
                 );
     }
 
@@ -89,19 +86,18 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomResponse> findAllRoomsByHotelId(Long hotelId) {
+    public List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId) {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
 
         List<Room> rooms = roomRepository.findByHotelId(hotelId);
 
-        return rooms.stream().map(room -> new RoomResponse(
+        return rooms.stream().map(room -> new NewRoomResponse(
                 room.getId(),
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
-                room.getPictures(),
-                room.getHotel()
+                room.getPictures()
         )).collect(Collectors.toList());
     }
 
@@ -111,6 +107,19 @@ public class RoomServiceImpl implements RoomService {
         return roomRepository.findById(id)
                 .map(Room::isAvailable)
                 .orElse(false);
+    }
+
+    @Override
+    public List<RoomResponse> getAllRooms() {
+        List<Room> rooms = roomRepository.findAll();
+
+        return rooms.stream().map(room -> new RoomResponse(
+                room.getId(),
+                room.getRoomType(),
+                room.getPrice(),
+                room.isAvailable(),
+                room.getPictures()
+        )).collect(Collectors.toList());
     }
 
     @Override
@@ -125,8 +134,7 @@ public class RoomServiceImpl implements RoomService {
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
-                room.getPictures(),
-                room.getHotel()
+                room.getPictures()
         )).collect(Collectors.toList());
     }
 
@@ -147,8 +155,7 @@ public class RoomServiceImpl implements RoomService {
                 updatedRoom.getRoomType(),
                 updatedRoom.getPrice(),
                 updatedRoom.isAvailable(),
-                updatedRoom.getPictures(),
-                updatedRoom.getHotel()
+                updatedRoom.getPictures()
         );
     }
 
@@ -170,8 +177,7 @@ public class RoomServiceImpl implements RoomService {
                 updatedRoom.getRoomType(),
                 updatedRoom.getPrice(),
                 updatedRoom.isAvailable(),
-                updatedRoom.getPictures(),
-                updatedRoom.getHotel()
+                updatedRoom.getPictures()
         );
     }
 
@@ -194,22 +200,20 @@ public class RoomServiceImpl implements RoomService {
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
-                room.getPictures(),
-                room.getHotel()
+                room.getPictures()
         )).collect(Collectors.toList());
     }
 
     @Override
-    public List<RoomResponse> filterByPriceAndState(BigDecimal minPrice, BigDecimal maxPrice, State state) {
-        List<Room> rooms = roomRepository.findByPriceBetweenAndHotelState(minPrice, maxPrice, state);
+    public List<RoomResponse> filterByPriceAndLocation(BigDecimal minPrice, BigDecimal maxPrice, Location location) {
+        List<Room> rooms = roomRepository.findByPriceBetweenAndHotelLocation(minPrice, maxPrice, location);
 
         return rooms.stream().map(room -> new RoomResponse(
                 room.getId(),
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
-                room.getPictures(),
-                room.getHotel()
+                room.getPictures()
         )).collect(Collectors.toList());
     }
 

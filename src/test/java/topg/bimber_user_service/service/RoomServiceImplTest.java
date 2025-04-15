@@ -8,21 +8,20 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import topg.bimber_user_service.dto.requests.RoomRequest;
+import topg.bimber_user_service.dto.responses.NewRoomResponse;
 import topg.bimber_user_service.dto.responses.RoomResponse;
 import topg.bimber_user_service.exceptions.RoomNotAvailableException;
 import topg.bimber_user_service.models.Hotel;
 import topg.bimber_user_service.models.Room;
 import topg.bimber_user_service.models.RoomType;
-import topg.bimber_user_service.models.State;
 import topg.bimber_user_service.repository.HotelRepository;
 import topg.bimber_user_service.repository.RoomRepository;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static topg.bimber_user_service.models.State.LAGOS;
+import static topg.bimber_user_service.models.Location.*;
 
 @SpringBootTest
 @Transactional
@@ -42,8 +41,7 @@ class RoomServiceImplTest {
     public void createRoomWithPictureTest() {
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Ipaja");
-        hotel.setState(LAGOS);
+        hotel.setLocation(BIRMINGHAM);
         hotel.setDescription(" hotel");
         hotel = hotelRepository.save(hotel);
 
@@ -52,6 +50,7 @@ class RoomServiceImplTest {
         request.setRoomType(RoomType.DELUXE);
         request.setPrice(new BigDecimal("50000.00"));
         request.setIsAvailable(true);
+        request.setPictures(List.of("picture1","picture2", "picture3"));
 
         MockMultipartFile mockFile = new MockMultipartFile(
                 "file",
@@ -60,7 +59,7 @@ class RoomServiceImplTest {
                 new byte[10]
         );
 
-        RoomResponse response = roomServiceImpl.createRoom(request, List.of("picture1","picture2", "picture3"));
+        RoomResponse response = roomServiceImpl.createRoom(request);
 
         assertNotNull(response);
         assertEquals(RoomType.DELUXE, response.getRoomType());
@@ -74,8 +73,7 @@ class RoomServiceImplTest {
     public void shouldReturnTrueWhenRoomIsAvailable() {
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(LAGOS);
+        hotel.setLocation(BIRMINGHAM);
         hotel.setDescription("A sample test hotel");
         hotel = hotelRepository.save(hotel);
 
@@ -96,8 +94,7 @@ class RoomServiceImplTest {
     public void shouldReturnFalseWhenRoomIsNotAvailable() {
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(LAGOS);
+        hotel.setLocation(BELFAST);
         hotel.setDescription("A sample test hotel");
         hotel = hotelRepository.save(hotel);
 
@@ -126,8 +123,7 @@ class RoomServiceImplTest {
     public void shouldDeleteRoomSuccessfully() {
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(LAGOS);
+        hotel.setLocation(SWANSEA);
         hotel.setDescription("A sample test hotel");
         hotel = hotelRepository.save(hotel);
 
@@ -155,8 +151,7 @@ class RoomServiceImplTest {
     public void shouldActivateRoomSuccessfully() {
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(LAGOS);
+        hotel.setLocation(SOUTHAMPTON);
         hotel.setDescription("A sample test hotel");
         hotel = hotelRepository.save(hotel);
 
@@ -178,17 +173,14 @@ class RoomServiceImplTest {
     public void shouldThrowExceptionIfRoomDoesNotBelongToHotel() {
         Hotel hotel1 = new Hotel();
         hotel1.setName("Test Hotel 1");
-        hotel1.setLocation("Test Location");
-        hotel1.setState(LAGOS);
+        hotel1.setLocation(SWANSEA);
         hotel1.setDescription("A sample test hotel");
-        hotel1 = hotelRepository.save(hotel1); // Save and assign properly
-
+        hotel1 = hotelRepository.save(hotel1);
         Hotel hotel2 = new Hotel();
         hotel2.setName("Test Hotel 2");
-        hotel2.setLocation("Test Location");
-        hotel2.setState(LAGOS);
+        hotel2.setLocation(SHEFFIELD);
         hotel2.setDescription("Another sample test hotel");
-        hotel2 = hotelRepository.save(hotel2); // Save correctly
+        hotel2 = hotelRepository.save(hotel2);
 
         System.out.println("Hotel1 ID: " + hotel1.getId());
         System.out.println("Hotel2 ID: " + hotel2.getId());
@@ -225,8 +217,7 @@ class RoomServiceImplTest {
     public void shouldReturnAllRoomsForHotel() {
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(LAGOS);
+        hotel.setLocation(BELFAST);
         hotel.setDescription("A sample test hotel");
         hotel = hotelRepository.save(hotel);
         Long hotelId = hotel.getId();
@@ -245,7 +236,7 @@ class RoomServiceImplTest {
         room2.setPrice(BigDecimal.valueOf(80000.0));
         room2 = roomRepository.save(room2);
 
-        List<RoomResponse> rooms = roomServiceImpl.findAllRoomsByHotelId(hotelId);
+        List<NewRoomResponse> rooms = roomServiceImpl.findAllRoomsByHotelId(hotelId);
 
         assertNotNull(rooms);
         assertEquals(2, rooms.size());
@@ -259,8 +250,7 @@ class RoomServiceImplTest {
     public void shouldReturnOnlyAvailableRoomsForHotel() {
         Hotel hotel = new Hotel();
         hotel.setName("Sample Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(LAGOS);
+        hotel.setLocation(BELFAST);
         hotel.setDescription("A sample test hotel");
         hotel = hotelRepository.save(hotel);
         Long hotelId = hotel.getId();
@@ -293,8 +283,7 @@ class RoomServiceImplTest {
     public void shouldDeactivateRoomForHotel() {
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(LAGOS);
+        hotel.setLocation(BELFAST);
         hotel.setDescription("A test hotel");
         hotel = hotelRepository.save(hotel);
         Long hotelId = hotel.getId();
@@ -319,8 +308,7 @@ class RoomServiceImplTest {
     public void shouldUpdateRoomSuccessfully() {
         Hotel hotel = new Hotel();
         hotel.setName("Sample Hotel");
-        hotel.setLocation("Test Location");
-        hotel.setState(LAGOS);
+        hotel.setLocation(SWANSEA);
         hotel.setDescription("A test hotel");
         hotel = hotelRepository.save(hotel);
 
@@ -353,8 +341,7 @@ class RoomServiceImplTest {
     public void shouldReturnRoomsByTypeForHotel() {
         Hotel hotel = new Hotel();
         hotel.setName("Test Hotel");
-        hotel.setLocation("Sample Location");
-        hotel.setState(LAGOS);
+        hotel.setLocation(BELFAST);
         hotel.setDescription("A test hotel");
         hotel = hotelRepository.save(hotel);
         Long hotelId = hotel.getId();
@@ -392,15 +379,13 @@ class RoomServiceImplTest {
     public void shouldReturnRoomsByPriceRangeAndState() {
         Hotel hotel1 = new Hotel();
         hotel1.setName("Hotel A");
-        hotel1.setLocation("Lagos Mainland");
-        hotel1.setState(LAGOS);
+        hotel1.setLocation(SHEFFIELD);
         hotel1.setDescription("Luxury hotel in Lagos");
         hotel1 = hotelRepository.save(hotel1);
 
         Hotel hotel2 = new Hotel();
         hotel2.setName("Hotel B");
-        hotel2.setLocation("Ondo town");
-        hotel2.setState(State.ONDO);
+        hotel2.setLocation(SWANSEA);
         hotel2.setDescription("Business-class hotel in Abuja");
         hotel2 = hotelRepository.save(hotel2);
 
@@ -425,13 +410,13 @@ class RoomServiceImplTest {
         room3.setPrice(new BigDecimal("15000"));
         roomRepository.save(room3);
 
-        List<RoomResponse> filteredRooms = roomServiceImpl.filterByPriceAndState(new BigDecimal("4000"), new BigDecimal("12000"), LAGOS);
+        List<RoomResponse> filteredRooms = roomServiceImpl.filterByPriceAndLocation(new BigDecimal("4000"), new BigDecimal("12000"), SWANSEA);
 
         assertNotNull(filteredRooms);
         assertEquals(2, filteredRooms.size());
         assertTrue(filteredRooms.stream().allMatch(room -> room.getPrice().compareTo(new BigDecimal("4000")) >= 0
                 && room.getPrice().compareTo(new BigDecimal("12000")) <= 0
-                && room.getHotel().getState().equals(LAGOS)));
+               ));
     }
 
 

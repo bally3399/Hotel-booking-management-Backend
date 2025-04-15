@@ -1,14 +1,13 @@
 package topg.bimber_user_service.dto.requests;
 
-import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.models.Location;
 
 import java.util.List;
 
 public record HotelDtoFilter(
         Long id,
         String name,
-        State state,
-        String location,// Adding state to match the updated hotel model
+        Location location,
         List<String> amenities,
         String description,
         List<String> pictureUrls

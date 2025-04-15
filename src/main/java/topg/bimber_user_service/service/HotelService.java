@@ -9,11 +9,13 @@ import java.util.List;
 
 public interface HotelService {
     HotelResponseDto createHotel(CreateHotelDto createHotelDto);
-    List<HotelDtoFilter> getHotelsByState(String stateName);
+    List<HotelDtoFilter> getHotelsByLocation(String stateName);
     HotelResponseDto editHotelById(Long id, HotelRequestDto hotelRequestDto);
     HotelDtoFilter getHotelById(Long id);
+    HotelDtoFilter findByName(String name);
+    List<HotelDtoFilter> getAllHotels();
     String deleteHotelById(Long id);
-    List<HotelDtoFilter> getTotalHotelsInState(String state);
+    List<HotelDtoFilter> getTotalHotelsByLocation(String state);
 
-    List<HotelDtoFilter> getMostBookedHotelsByState(String stateName);
+    List<HotelDtoFilter> getMostBookedHotelsByLocation(String stateName);
 }

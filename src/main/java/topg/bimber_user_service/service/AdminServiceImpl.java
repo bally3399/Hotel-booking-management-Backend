@@ -12,7 +12,7 @@ import topg.bimber_user_service.exceptions.InvalidDetailsException;
 import topg.bimber_user_service.exceptions.UserNotFoundInDb;
 import topg.bimber_user_service.mail.MailService;
 import topg.bimber_user_service.models.Admin;
-import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.models.Location;
 import topg.bimber_user_service.repository.AdminRepository;
 
 
@@ -105,8 +105,18 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public RoomResponse addRoom(RoomRequest roomRequest, List<String> multipartFiles) {
-        return roomServiceImpl.createRoom(roomRequest, multipartFiles);
+    public HotelDtoFilter findByName(String name) {
+        return hotelServiceImpl.findByName(name);
+    }
+
+    @Override
+    public List<HotelDtoFilter> getAllHotels() {
+        return hotelServiceImpl.getAllHotels();
+    }
+
+    @Override
+    public RoomResponse addRoom(RoomRequest roomRequest) {
+        return roomServiceImpl.createRoom(roomRequest);
     }
 
     @Override
@@ -122,8 +132,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<HotelDtoFilter> getHotelsByState(State state) {
-        return hotelServiceImpl.getHotelsByState(String.valueOf(state));
+    public List<HotelDtoFilter> getHotelsByLocation(Location location) {
+        return hotelServiceImpl.getHotelsByLocation(String.valueOf(location));
     }
 
     @Override
@@ -141,14 +151,15 @@ public class AdminServiceImpl implements AdminService {
         return hotelServiceImpl.deleteHotelById(id);
     }
 
+
     @Override
-    public List<HotelDtoFilter> getHotelsInState(State state) {
-        return hotelServiceImpl.getTotalHotelsInState(String.valueOf(state));
+    public List<HotelDtoFilter> getTotalHotelsByLocation(String state) {
+        return hotelServiceImpl.getTotalHotelsByLocation(state);
     }
 
     @Override
-    public List<RoomResponse> filterByPriceAndState(BigDecimal bigDecimal, BigDecimal bigDecimal1, State state) {
-        return roomServiceImpl.filterByPriceAndState(bigDecimal, bigDecimal1, state);
+    public List<RoomResponse> filterByPriceAndLocation(BigDecimal bigDecimal, BigDecimal bigDecimal1, Location location) {
+        return roomServiceImpl.filterByPriceAndLocation(bigDecimal, bigDecimal1, location);
     }
 
     @Override
@@ -192,8 +203,18 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<HotelDtoFilter> getMostBookedHotelInState(State state) {
-        return hotelServiceImpl.getMostBookedHotelsByState(String.valueOf(state));
+    public List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId) {
+        return roomServiceImpl.findAllRoomsByHotelId(hotelId);
+    }
+
+    @Override
+    public List<RoomResponse> getAllRooms() {
+        return roomServiceImpl.getAllRooms();
+    }
+
+    @Override
+    public List<HotelDtoFilter> getMostBookedHotelByLocation(Location location) {
+        return hotelServiceImpl.getMostBookedHotelsByLocation(String.valueOf(location));
     }
 
 

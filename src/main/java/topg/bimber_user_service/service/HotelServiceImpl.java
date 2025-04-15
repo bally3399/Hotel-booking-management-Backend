@@ -12,7 +12,7 @@ import topg.bimber_user_service.dto.responses.HotelResponseDto;
 import topg.bimber_user_service.exceptions.InvalidStateException;
 import topg.bimber_user_service.exceptions.InvalidUserInputException;
 import topg.bimber_user_service.models.Hotel;
-import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.models.Location;
 import topg.bimber_user_service.repository.HotelRepository;
 
 import java.util.ArrayList;
@@ -34,14 +34,14 @@ public class HotelServiceImpl implements HotelService {
     public HotelResponseDto createHotel(CreateHotelDto createHotelDto) {
         Hotel hotel = modelMapper.map(createHotelDto,Hotel.class);
         hotel = hotelRepository.save(hotel);
-        HotelDto hotelDto = new HotelDto(hotel.getId(), hotel.getName(),  hotel.getState(), hotel.getLocation(), hotel.getAmenities(), hotel.getDescription(), hotel.getPictures());
+        HotelDto hotelDto = new HotelDto(hotel.getId(), hotel.getName(),  hotel.getLocation(),  hotel.getAmenities(), hotel.getDescription(), hotel.getPictures());
         return new HotelResponseDto(true, hotelDto);
     }
 
     @Override
-    public List<HotelDtoFilter> getHotelsByState(String stateName) {
-        State state = State.valueOf(stateName.toUpperCase());
-        List<Hotel> hotels = hotelRepository.findByState(state);
+    public List<HotelDtoFilter> getHotelsByLocation(String stateName) {
+        Location location = Location.valueOf(stateName.toUpperCase());
+        List<Hotel> hotels = hotelRepository.findByLocation(location);
 
         if (hotels.isEmpty()) {
             return new ArrayList<>();
@@ -54,7 +54,6 @@ public class HotelServiceImpl implements HotelService {
                     return new HotelDtoFilter(
                             hotel.getId(),
                             hotel.getName(),
-                            hotel.getState(),
                             hotel.getLocation(),
                             hotel.getAmenities(),
                             hotel.getDescription(),
@@ -82,15 +81,15 @@ public class HotelServiceImpl implements HotelService {
             hotel.setDescription(hotelRequestDto.getDescription());
         }
 
-        if (hotelRequestDto.getState() != null) {
-            hotel.setState(hotelRequestDto.getState());
+        if (hotelRequestDto.getLocation() != null) {
+            hotel.setLocation(hotelRequestDto.getLocation());
         }
 
         if (hotelRequestDto.getLocation() != null) {
             hotel.setLocation(hotelRequestDto.getLocation());
         }
         hotel = hotelRepository.save(hotel);
-        HotelDto hotelDto = new HotelDto(hotel.getId(), hotel.getName(), hotel.getState(), hotel.getLocation(), hotel.getAmenities(), hotel.getDescription(), hotel.getPictures());
+        HotelDto hotelDto = new HotelDto(hotel.getId(), hotel.getName(), hotel.getLocation(), hotel.getAmenities(), hotel.getDescription(), hotel.getPictures());
         return new HotelResponseDto(true, hotelDto);
     }
 
@@ -102,7 +101,6 @@ public class HotelServiceImpl implements HotelService {
         return new HotelDtoFilter(
                 hotel.getId(),
                 hotel.getName(),
-                hotel.getState(),
                 hotel.getLocation(),
                 hotel.getAmenities(),
                 hotel.getDescription(),
@@ -111,31 +109,55 @@ public class HotelServiceImpl implements HotelService {
 
     }
 
+    @Override
+    public HotelDtoFilter findByName(String name) {
+        Hotel hotel = hotelRepository.findByName(name).orElseThrow(()->new IllegalStateException("Hotel With Name Not Found"));
+        return modelMapper.map(hotel,HotelDtoFilter.class);
+    }
+
+    @Override
+    public List<HotelDtoFilter> getAllHotels() {
+        List<Hotel> hotels = hotelRepository.findAll();
+        return  hotels.stream()
+                .map(hotel -> {
+                    List<String> pictureUrls = hotel.getPictures();
+                    return new HotelDtoFilter(
+                            hotel.getId(),
+                            hotel.getName(),
+                            hotel.getLocation(),
+                            hotel.getAmenities(),
+                            hotel.getDescription(),
+                            pictureUrls
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public String deleteHotelById(Long id) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new InvalidUserInputException("Id not found"));
 
-        hotelRepository.delete(hotel);
-        return hotel.getName() + " located at " + hotel.getState() + " has been deleted";
+        hotelRepository.deleteById(id);
+        return hotel.getName() + " located at " + hotel.getLocation() + " has been deleted";
     }
 
     @Override
-    public List<HotelDtoFilter> getTotalHotelsInState(String state) {
-        return getHotelsByState(state);
+    public List<HotelDtoFilter> getTotalHotelsByLocation(String state) {
+        return getHotelsByLocation(state);
     }
 
     @Override
-    public List<HotelDtoFilter> getMostBookedHotelsByState(String stateName) {
+    public List<HotelDtoFilter> getMostBookedHotelsByLocation(String stateName) {
 
         if (stateName == null || stateName.trim().isEmpty()) {
             throw new InvalidStateException("State cannot be empty.");
         }
 
-        State state = State.valueOf(stateName.toUpperCase());
+        Location location = Location.valueOf(stateName.toUpperCase());
 
-        List<Hotel> hotels = hotelRepository.findMostBookedHotelsByState(state);
+        List<Hotel> hotels = hotelRepository.findMostBookedHotelsByLocation(location);
 
         return hotels.stream()
                 .map(hotel -> {
@@ -143,7 +165,6 @@ public class HotelServiceImpl implements HotelService {
                     return new HotelDtoFilter(
                             hotel.getId(),
                             hotel.getName(),
-                            hotel.getState(),
                             hotel.getLocation(),
                             hotel.getAmenities(),
                             hotel.getDescription(),

@@ -3,7 +3,7 @@ package topg.bimber_user_service.service;
 import topg.bimber_user_service.dto.requests.*;
 import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.models.Admin;
-import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.models.Location;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,14 +19,16 @@ public interface AdminService {
     String deleteAdminById(String adminId);
 
     void deleteAll();
+    HotelDtoFilter findByName(String name);
+    List<HotelDtoFilter> getAllHotels();
 
-    RoomResponse addRoom(RoomRequest roomRequest, List<String> multipartFiles);
+    RoomResponse addRoom(RoomRequest roomRequest);
 
     HotelResponseDto createHotel(CreateHotelDto createHotelDto);
 
     Admin findByEmail(String mail);
 
-    List<HotelDtoFilter> getHotelsByState(State state);
+    List<HotelDtoFilter> getHotelsByLocation(Location location);
 
     HotelResponseDto editHotelById(Long id, HotelRequestDto updatedHotelDto);
 
@@ -34,11 +36,12 @@ public interface AdminService {
 
     String deleteHotelById(Long id);
 
-    List<HotelDtoFilter> getMostBookedHotelInState(State state);
+    List<HotelDtoFilter> getMostBookedHotelByLocation(Location location);
 
-    List<HotelDtoFilter> getHotelsInState(State state);
+    List<HotelDtoFilter> getTotalHotelsByLocation(String state);
 
-    List<RoomResponse> filterByPriceAndState(BigDecimal bigDecimal, BigDecimal bigDecimal1, State state);
+
+    List<RoomResponse> filterByPriceAndLocation(BigDecimal bigDecimal, BigDecimal bigDecimal1, Location location);
 
     List<RoomResponse> filterHotelRoomByType(long l, String deluxe);
 
@@ -55,4 +58,7 @@ public interface AdminService {
     String deleteRoomById(long roomId);
 
     String editRoomById(long l, RoomRequest roomRequest);
+
+    List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId);
+    List<RoomResponse> getAllRooms ();
 }

@@ -2,13 +2,12 @@ package topg.bimber_user_service.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
 import topg.bimber_user_service.dto.requests.UserRequestDto;
-import topg.bimber_user_service.dto.responses.BookingResponseDto;
-import topg.bimber_user_service.dto.responses.UserCreatedDto;
-import topg.bimber_user_service.dto.responses.UserResponseDto;
+import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.exceptions.UserNotFoundException;
 import topg.bimber_user_service.models.User;
 import topg.bimber_user_service.repository.UserRepository;
@@ -23,6 +22,10 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RoomServiceImpl roomServiceImpl;
 
     public UserServiceImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
@@ -32,6 +35,7 @@ public class UserServiceImpl implements UserService {
     public UserCreatedDto createUser(UserRequestDto userRequestDto) {
 
         User user = modelMapper.map(userRequestDto, User.class);
+        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
         user = userRepository.save(user);
         UserCreatedDto response = modelMapper.map(user, UserCreatedDto.class);
         response.setMessage("Registration successful");
@@ -99,5 +103,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<BookingResponseDto> listAllBookings() {
         return bookingService.listAllBookings();
+    }
+
+    @Override
+    public List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId) {
+        return roomServiceImpl.findAllRoomsByHotelId(hotelId);
+    }
+
+    @Override
+    public boolean isRoomAvailable(Long id) {
+        return roomServiceImpl.isRoomAvailable(id);
+    }
+
+    @Override
+    public List<RoomResponse> getAllRooms() {
+        return roomServiceImpl.getAllRooms();
     }
 }

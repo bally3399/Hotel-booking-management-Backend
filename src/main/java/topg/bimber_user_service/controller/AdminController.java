@@ -1,22 +1,16 @@
 package topg.bimber_user_service.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.*;
 import topg.bimber_user_service.dto.responses.*;
-import topg.bimber_user_service.models.State;
+import topg.bimber_user_service.models.Location;
 import topg.bimber_user_service.service.AdminService;
-import topg.bimber_user_service.service.AdminServiceImpl;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import static io.lettuce.core.pubsub.PubSubOutput.Type.message;
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,11 +39,18 @@ public class AdminController {
         HotelResponseDto response = adminServiceImpl.createHotel(createHotelDto);
         return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
     }
-
-    @GetMapping("/hotels/state/{state}")
+    @PostMapping("/add_room")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getHotelsByState(@PathVariable State state) {
-        List<HotelDtoFilter> hotels = adminServiceImpl.getHotelsByState(state);
+    public ResponseEntity<?> addRoom(@RequestBody RoomRequest roomRequest) {
+        RoomResponse response = adminServiceImpl.addRoom(roomRequest);
+        return ResponseEntity.status(201).body(new BaseResponse<>(true, response));
+    }
+
+
+    @GetMapping("/hotels/state/{location}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getHotelsByLocation(@PathVariable Location location) {
+        List<HotelDtoFilter> hotels = adminServiceImpl.getHotelsByLocation(location);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, hotels));
 
     }
@@ -68,6 +69,19 @@ public class AdminController {
         HotelDtoFilter response = adminServiceImpl.getHotelById(id);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
+    @GetMapping("/hotels/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getAllHotels() {
+        List<HotelDtoFilter> response = adminServiceImpl.getAllHotels();
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
+    }
+
+    @GetMapping("/hotels/name")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getHotelByName(@RequestBody String name) {
+        HotelDtoFilter response = adminServiceImpl.findByName(name);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
+    }
 
     @DeleteMapping("/hotels/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -77,28 +91,38 @@ public class AdminController {
 
     }
 
-    @GetMapping("/hotels/most-booked/{state}")
+    @GetMapping("/hotels/most-booked/{location}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<HotelDtoFilter>> getMostBookedHotelInState(@PathVariable State state) {
-        List<HotelDtoFilter> hotels = adminServiceImpl.getMostBookedHotelInState(state);
+    public ResponseEntity<List<HotelDtoFilter>> getMostBookedHotelByLocation(@PathVariable Location location) {
+        List<HotelDtoFilter> hotels = adminServiceImpl.getMostBookedHotelByLocation(location);
         return ResponseEntity.ok(hotels);
     }
 
-    @GetMapping("/hotels/in-state/{state}")
+    @GetMapping("/rooms/hotelId")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getHotelsInState(@PathVariable State state) {
-        List<HotelDtoFilter> response = adminServiceImpl.getHotelsInState(state);
+    public ResponseEntity<?> findAllRoomsByHotelId(@RequestBody Long hotelId) {
+        List<NewRoomResponse> response = adminServiceImpl.findAllRoomsByHotelId(hotelId);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
 
     }
+
+    @GetMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getAllRooms() {
+        List<RoomResponse> response = adminServiceImpl.getAllRooms();
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
+
+    }
+
+
 
     @GetMapping("/filter/price-and-state")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> filterByPriceAndState(
             @RequestParam("minPrice") BigDecimal minPrice,
             @RequestParam("maxPrice") BigDecimal maxPrice,
-            @RequestParam("state") State state) {
-        List<RoomResponse> rooms = adminServiceImpl.filterByPriceAndState(minPrice, maxPrice, state);
+            @RequestParam("location") Location location) {
+        List<RoomResponse> rooms = adminServiceImpl.filterByPriceAndLocation(minPrice, maxPrice, location);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,rooms));
 
     }
@@ -167,6 +191,12 @@ public class AdminController {
             @RequestBody RoomRequest roomRequest) {
         String response = adminServiceImpl.editRoomById(roomId, roomRequest);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> getTotalHotelsByLocation(@RequestParam String state) {
+        var response = adminServiceImpl.getTotalHotelsByLocation(state);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
 
