@@ -2,6 +2,7 @@ package topg.bimber_user_service.dto.requests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,6 @@ public class UserRequestDto {
         @NotBlank(message = "Email cannot be blank")
         @Email(message = "Email should be valid")
         private String email;
-        @NotBlank(message = "Role cannot be blank")
+        @NotNull(message = "Role cannot be null")
         private Role role;
 }
