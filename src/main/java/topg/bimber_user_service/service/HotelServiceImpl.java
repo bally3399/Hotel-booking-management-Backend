@@ -148,13 +148,12 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public List<HotelDtoFilter> getMostBookedHotelsByLocation(String stateName) {
+    public List<HotelDtoFilter> getMostBookedHotelsByLocation(Location location) {
 
-        if (stateName == null || stateName.trim().isEmpty()) {
+        if (location == null) {
             throw new InvalidStateException("State cannot be empty.");
         }
 
-        Location location = Location.valueOf(stateName.toUpperCase());
 
         List<Hotel> hotels = hotelRepository.findMostBookedHotelsByLocation(location);
 

@@ -214,7 +214,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<HotelDtoFilter> getMostBookedHotelByLocation(Location location) {
-        return hotelServiceImpl.getMostBookedHotelsByLocation(String.valueOf(location));
+        return hotelServiceImpl.getMostBookedHotelsByLocation(location);
     }
 
 
