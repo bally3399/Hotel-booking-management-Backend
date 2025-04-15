@@ -2,6 +2,7 @@ package topg.bimber_user_service.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
@@ -23,6 +24,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
@@ -32,6 +35,7 @@ public class UserServiceImpl implements UserService {
     public UserCreatedDto createUser(UserRequestDto userRequestDto) {
 
         User user = modelMapper.map(userRequestDto, User.class);
+        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
         user = userRepository.save(user);
         UserCreatedDto response = modelMapper.map(user, UserCreatedDto.class);
         response.setMessage("Registration successful");
