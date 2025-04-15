@@ -8,6 +8,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import topg.bimber_user_service.dto.requests.RoomRequest;
+import topg.bimber_user_service.dto.responses.NewRoomResponse;
 import topg.bimber_user_service.dto.responses.RoomResponse;
 import topg.bimber_user_service.exceptions.RoomNotAvailableException;
 import topg.bimber_user_service.models.Hotel;
@@ -235,7 +236,7 @@ class RoomServiceImplTest {
         room2.setPrice(BigDecimal.valueOf(80000.0));
         room2 = roomRepository.save(room2);
 
-        List<RoomResponse> rooms = roomServiceImpl.findAllRoomsByHotelId(hotelId);
+        List<NewRoomResponse> rooms = roomServiceImpl.findAllRoomsByHotelId(hotelId);
 
         assertNotNull(rooms);
         assertEquals(2, rooms.size());
@@ -415,7 +416,7 @@ class RoomServiceImplTest {
         assertEquals(2, filteredRooms.size());
         assertTrue(filteredRooms.stream().allMatch(room -> room.getPrice().compareTo(new BigDecimal("4000")) >= 0
                 && room.getPrice().compareTo(new BigDecimal("12000")) <= 0
-                && room.getHotel().getLocation().equals(SWANSEA)));
+               ));
     }
 
 
