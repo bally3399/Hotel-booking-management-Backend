@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import topg.bimber_user_service.dto.requests.RoomRequest;
+import topg.bimber_user_service.dto.responses.DeleteRoomResponse;
+import topg.bimber_user_service.dto.responses.EditRoomResponse;
 import topg.bimber_user_service.dto.responses.NewRoomResponse;
 import topg.bimber_user_service.dto.responses.RoomResponse;
 import topg.bimber_user_service.exceptions.RoomNotAvailableException;
@@ -59,7 +61,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public String editRoomById(Long id, RoomRequest roomRequest) {
+    public EditRoomResponse editRoomById(Long id, RoomRequest roomRequest) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new RoomNotAvailableException("Room not found"));
 
@@ -69,21 +71,31 @@ public class RoomServiceImpl implements RoomService {
 
         roomRepository.save(room);
 
-        return "Room updated successfully";
+        EditRoomResponse response = new EditRoomResponse();
+        response.setSuccess(true);
+        response.setMessage("Room updated successfully");
+        response.setRoomId(room.getId());
+        response.setRoomType(room.getRoomType());
+        response.setPrice(room.getPrice());
+        response.setIsAvailable(room.isAvailable());
+
+        return response;
     }
 
 
+
     @Override
-    public String deleteRoomById(Long id) {
+    public DeleteRoomResponse deleteRoomById(Long id) {
         Optional<Room> roomOptional = roomRepository.findById(id);
 
         if (roomOptional.isPresent()) {
             roomRepository.deleteById(id);
-            return "Room deleted successfully";
+            return new DeleteRoomResponse(true, "Room deleted successfully");
         } else {
-            return "Room not found";
+            return new DeleteRoomResponse(false, "Room not found");
         }
     }
+
 
     @Override
     public List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId) {
@@ -204,18 +216,23 @@ public class RoomServiceImpl implements RoomService {
         )).collect(Collectors.toList());
     }
 
+
     @Override
     public List<RoomResponse> filterByPriceAndLocation(BigDecimal minPrice, BigDecimal maxPrice, Location location) {
-        List<Room> rooms = roomRepository.findByPriceBetweenAndHotelLocation(minPrice, maxPrice, location);
+        List<Room> rooms = roomRepository.findByPriceBetween(minPrice, maxPrice);
 
-        return rooms.stream().map(room -> new RoomResponse(
-                room.getId(),
-                room.getRoomType(),
-                room.getPrice(),
-                room.isAvailable(),
-                room.getPictures()
-        )).collect(Collectors.toList());
+        return rooms.stream()
+                .filter(room -> room.getHotel().getLocation() == location)
+                .map(room -> new RoomResponse(
+                        room.getId(),
+                        room.getRoomType(),
+                        room.getPrice(),
+                        room.isAvailable(),
+                        room.getPictures()
+                ))
+                .collect(Collectors.toList());
     }
+
 
 
 
