@@ -193,13 +193,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String deleteRoomById(long roomId) {
+    public DeleteRoomResponse deleteRoomById(long roomId) {
         return roomServiceImpl.deleteRoomById(roomId);
     }
 
     @Override
-    public String editRoomById(long l, RoomRequest roomRequest) {
-        return roomServiceImpl.editRoomById(l, roomRequest);
+    public EditRoomResponse editRoomById(long roomId, RoomRequest roomRequest) {
+        return roomServiceImpl.editRoomById(roomId, roomRequest);
     }
 
     @Override
