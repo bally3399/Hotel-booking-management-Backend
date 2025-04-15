@@ -18,5 +18,5 @@ public interface HotelService {
     String deleteHotelById(Long id);
     List<HotelDtoFilter> getTotalHotelsByLocation(Location location);
 
-    List<HotelDtoFilter> getMostBookedHotelsByLocation(String stateName);
+    List<HotelDtoFilter> getMostBookedHotelsByLocation(Location location);
 }

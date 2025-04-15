@@ -180,7 +180,7 @@ public class AdminController {
     @DeleteMapping("/{roomId}")
     public ResponseEntity<?> deleteRoomById(
             @PathVariable("roomId") long roomId) {
-        String response = adminServiceImpl.deleteRoomById(roomId);
+        DeleteRoomResponse response = adminServiceImpl.deleteRoomById(roomId);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 
@@ -189,7 +189,7 @@ public class AdminController {
     public ResponseEntity<?> editRoomById(
             @PathVariable("roomId") long roomId,
             @RequestBody RoomRequest roomRequest) {
-        String response = adminServiceImpl.editRoomById(roomId, roomRequest);
+        EditRoomResponse response = adminServiceImpl.editRoomById(roomId, roomRequest);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 

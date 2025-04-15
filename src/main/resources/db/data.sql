@@ -63,7 +63,7 @@ VALUES
     (10, 1, 50000, true, '123e4567-e89b-12d3-a456-426614174001'),
     (11, 2, 35000, true, '123e4567-e89b-12d3-a456-426614174002');
 
-INSERT INTO comment (id,hotel_id,user_id,content) VALUES
-    (3,1,'123e4567-e89b-12d3-a456-426614174001','This a very nice hotel') ,
-    (4,2,'123e4567-e89b-12d3-a456-426614174002','This a very nice hotel, it has good Environment') ,
-    (5,3,'123e4567-e89b-12d3-a456-426614174003','This a very nice hotel, it has good Environment');
+INSERT INTO comment (id, hotel_id, user_id, user_name, content, created_at) VALUES
+    (3, 1, '123e4567-e89b-12d3-a456-426614174001', 'user1', 'This a very nice hotel', CURRENT_TIMESTAMP),
+    (4, 2, '123e4567-e89b-12d3-a456-426614174002', 'user2', 'This a very nice hotel, it has good Environment', CURRENT_TIMESTAMP),
+    (5, 3, '123e4567-e89b-12d3-a456-426614174003', 'user3', 'This a very nice hotel, it has good Environment', CURRENT_TIMESTAMP);

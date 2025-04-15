@@ -64,15 +64,15 @@ public class HotelController {
 
 
     @GetMapping("/count")
-    public ResponseEntity<?> getTotalHotelsInState(@RequestParam Location location) {
+    public ResponseEntity<?> getTotalHotelsInLocation(@RequestParam Location location) {
             var response = hotelServiceImpl.getTotalHotelsByLocation(location);
             return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
 
-    @GetMapping("/most-booked/{state}")
-    public ResponseEntity<?> getMostBookedHotelsByState(@PathVariable String state) {
-            List<HotelDtoFilter> hotels = hotelServiceImpl.getMostBookedHotelsByLocation(state);
+    @GetMapping("/most-booked/{location}")
+    public ResponseEntity<?> getMostBookedHotelsByLocation(@PathVariable Location location) {
+            List<HotelDtoFilter> hotels = hotelServiceImpl.getMostBookedHotelsByLocation(location);
             return ResponseEntity.status(200).body(new BaseResponse<>(true,hotels));
     }
 

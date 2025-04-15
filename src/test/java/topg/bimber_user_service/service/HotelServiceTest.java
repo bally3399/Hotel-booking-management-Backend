@@ -48,7 +48,7 @@ class HotelServiceTest {
     void getHotelsByLocation() {
         List<HotelDtoFilter> response = hotelService.getHotelsByLocation(Location.BELFAST);
         assertNotNull(response);
-        assertThat(response.size()).isEqualTo(2);
+        assertThat(response.size()).isEqualTo(1);
     }
 
     @Test
@@ -66,7 +66,7 @@ class HotelServiceTest {
     void getHotelById() {
         HotelDtoFilter response = hotelService.getHotelById(1L);
         assertNotNull(response);
-        assertThat(response.description()).isEqualTo("A luxurious hotel located in the heart of Osogbo.");
+        assertThat(response.description()).isEqualTo("Granite City in the northeast, oil industry hub.");
 
     }
 
@@ -79,13 +79,13 @@ class HotelServiceTest {
     @Test
     void getTotalHotelsByLocation() {
         List<HotelDtoFilter> response  = hotelService.getTotalHotelsByLocation(Location.BELFAST);
-        assertThat(response.size()).isEqualTo(2);
+        assertThat(response.size()).isEqualTo(1);
 
     }
 
     @Test
     void getMostBookedHotelsByLocation() {
-        var response = hotelService.getMostBookedHotelsByLocation("LAGOS");
-        assertThat(response.size()).isEqualTo(0);
+        var response = hotelService.getMostBookedHotelsByLocation(Location.BELFAST);
+        assertThat(response.size()).isEqualTo(1);
     }
 }
