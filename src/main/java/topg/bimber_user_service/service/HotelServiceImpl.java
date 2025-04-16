@@ -39,8 +39,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public List<HotelDtoFilter> getHotelsByLocation(String stateName) {
-        Location location = Location.valueOf(stateName.toUpperCase());
+    public List<HotelDtoFilter> getHotelsByLocation(Location location) {
         List<Hotel> hotels = hotelRepository.findByLocation(location);
 
         if (hotels.isEmpty()) {
@@ -144,18 +143,17 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public List<HotelDtoFilter> getTotalHotelsByLocation(String state) {
-        return getHotelsByLocation(state);
+    public List<HotelDtoFilter> getTotalHotelsByLocation(Location location) {
+        return getHotelsByLocation(location);
     }
 
     @Override
-    public List<HotelDtoFilter> getMostBookedHotelsByLocation(String stateName) {
+    public List<HotelDtoFilter> getMostBookedHotelsByLocation(Location location) {
 
-        if (stateName == null || stateName.trim().isEmpty()) {
+        if (location == null) {
             throw new InvalidStateException("State cannot be empty.");
         }
 
-        Location location = Location.valueOf(stateName.toUpperCase());
 
         List<Hotel> hotels = hotelRepository.findMostBookedHotelsByLocation(location);
 

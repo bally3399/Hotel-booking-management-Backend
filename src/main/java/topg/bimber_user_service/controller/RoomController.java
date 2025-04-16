@@ -7,6 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.RoomRequest;
+import topg.bimber_user_service.dto.responses.DeleteRoomResponse;
+import topg.bimber_user_service.dto.responses.EditRoomResponse;
 import topg.bimber_user_service.dto.responses.NewRoomResponse;
 import topg.bimber_user_service.dto.responses.RoomResponse;
 import topg.bimber_user_service.models.Location;
@@ -35,20 +37,23 @@ public class RoomController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editRoomById(@PathVariable Long id, @RequestBody RoomRequest roomRequest) {
-        String response = roomServiceImpl.editRoomById(id, roomRequest);
+    public ResponseEntity<EditRoomResponse> editRoomById(@PathVariable Long id, @RequestBody RoomRequest roomRequest) {
+        EditRoomResponse response = roomServiceImpl.editRoomById(id, roomRequest);
         return ResponseEntity.ok(response);
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteRoomById(@PathVariable Long id) {
-        String response = roomServiceImpl.deleteRoomById(id);
-        if (response.equals("Room deleted successfully")) {
+    public ResponseEntity<DeleteRoomResponse> deleteRoomById(@PathVariable Long id) {
+        DeleteRoomResponse response = roomServiceImpl.deleteRoomById(id);
+
+        if (response.isSuccess()) {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
+
 
 
     @GetMapping("/hotel/{hotelId}")
@@ -99,7 +104,7 @@ public class RoomController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<?> filterRoomsByPriceAndState(
+    public ResponseEntity<?> filterRoomsByPriceAndLocation(
             @RequestParam BigDecimal minPrice,
             @RequestParam BigDecimal maxPrice,
             @RequestParam Location location
@@ -107,5 +112,6 @@ public class RoomController {
         List<RoomResponse> response = roomServiceImpl.filterByPriceAndLocation(minPrice, maxPrice, location);
         return ResponseEntity.ok(response);
     }
+
 
 }

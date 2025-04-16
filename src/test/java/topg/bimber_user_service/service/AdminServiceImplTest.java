@@ -181,9 +181,8 @@ public class AdminServiceImplTest {
         roomRequest.setIsAvailable(false);
         roomRequest.setHotelId(1L);
 
-        String response = adminService.editRoomById(1L, roomRequest);
+        EditRoomResponse response = adminService.editRoomById(1L, roomRequest);
         assertNotNull(response);
-        assertEquals("Room updated successfully", response);
 
         Room updatedRoom = roomRepository.findById(1L).orElseThrow();
         assertEquals(RoomType.SUITE, updatedRoom.getRoomType());

@@ -11,7 +11,7 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> findByHotelId(Long hotelId);
     List<Room> findByHotelIdAndAvailable(Long hotelId, boolean available);
-    List<Room> findByPriceBetweenAndHotelLocation(BigDecimal minPrice, BigDecimal maxPrice, Location location);
+    List<Room> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
 
     List<Room> findByHotelIdAndRoomType(Long hotelId, RoomType roomType);
 

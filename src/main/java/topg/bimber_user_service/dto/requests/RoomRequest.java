@@ -36,5 +36,5 @@ public class RoomRequest {
       private BigDecimal price;
       private Boolean isAvailable;
       private Long hotelId;
-      private List<String> pictures; // Add this field
+      private List<String> pictures;
 }

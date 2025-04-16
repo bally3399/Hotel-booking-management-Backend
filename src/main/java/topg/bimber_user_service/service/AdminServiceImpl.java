@@ -133,7 +133,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<HotelDtoFilter> getHotelsByLocation(Location location) {
-        return hotelServiceImpl.getHotelsByLocation(String.valueOf(location));
+        return hotelServiceImpl.getHotelsByLocation(location);
     }
 
     @Override
@@ -153,8 +153,8 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public List<HotelDtoFilter> getTotalHotelsByLocation(String state) {
-        return hotelServiceImpl.getTotalHotelsByLocation(state);
+    public List<HotelDtoFilter> getTotalHotelsByLocation(Location location) {
+        return hotelServiceImpl.getTotalHotelsByLocation(location);
     }
 
     @Override
@@ -193,13 +193,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String deleteRoomById(long roomId) {
+    public DeleteRoomResponse deleteRoomById(long roomId) {
         return roomServiceImpl.deleteRoomById(roomId);
     }
 
     @Override
-    public String editRoomById(long l, RoomRequest roomRequest) {
-        return roomServiceImpl.editRoomById(l, roomRequest);
+    public EditRoomResponse editRoomById(long roomId, RoomRequest roomRequest) {
+        return roomServiceImpl.editRoomById(roomId, roomRequest);
     }
 
     @Override
@@ -214,7 +214,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<HotelDtoFilter> getMostBookedHotelByLocation(Location location) {
-        return hotelServiceImpl.getMostBookedHotelsByLocation(String.valueOf(location));
+        return hotelServiceImpl.getMostBookedHotelsByLocation(location);
     }
 
 

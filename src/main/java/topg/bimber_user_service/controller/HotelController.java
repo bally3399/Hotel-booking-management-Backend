@@ -10,6 +10,7 @@ import topg.bimber_user_service.dto.requests.HotelDtoFilter;
 import topg.bimber_user_service.dto.requests.HotelRequestDto;
 import topg.bimber_user_service.dto.responses.BaseResponse;
 import topg.bimber_user_service.dto.responses.HotelResponseDto;
+import topg.bimber_user_service.models.Location;
 import topg.bimber_user_service.service.HotelServiceImpl;
 
 import java.util.List;
@@ -29,9 +30,11 @@ public class HotelController {
         return ResponseEntity.status(201).body(new BaseResponse<>(true,response));
     }
 
-    @GetMapping("/state/{state}")
-    public ResponseEntity<?> getHotelsByState(@PathVariable("state") String state) {
-            List<HotelDtoFilter> hotels = hotelServiceImpl.getHotelsByLocation(state);
+
+
+    @GetMapping("/location/{location}")
+    public ResponseEntity<?> getHotelsByLocation(@PathVariable("location") Location location) {
+            List<HotelDtoFilter> hotels = hotelServiceImpl.getHotelsByLocation(location);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,hotels));
     }
 
@@ -63,15 +66,15 @@ public class HotelController {
 
 
     @GetMapping("/count")
-    public ResponseEntity<?> getTotalHotelsInState(@RequestParam String state) {
-            var response = hotelServiceImpl.getTotalHotelsByLocation(state);
+    public ResponseEntity<?> getTotalHotelsInLocation(@RequestParam Location location) {
+            var response = hotelServiceImpl.getTotalHotelsByLocation(location);
             return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 
 
-    @GetMapping("/most-booked/{state}")
-    public ResponseEntity<?> getMostBookedHotelsByState(@PathVariable String state) {
-            List<HotelDtoFilter> hotels = hotelServiceImpl.getMostBookedHotelsByLocation(state);
+    @GetMapping("/most-booked/{location}")
+    public ResponseEntity<?> getMostBookedHotelsByLocation(@PathVariable Location location) {
+            List<HotelDtoFilter> hotels = hotelServiceImpl.getMostBookedHotelsByLocation(location);
             return ResponseEntity.status(200).body(new BaseResponse<>(true,hotels));
     }
 

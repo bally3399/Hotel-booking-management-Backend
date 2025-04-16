@@ -38,7 +38,7 @@ public interface AdminService {
 
     List<HotelDtoFilter> getMostBookedHotelByLocation(Location location);
 
-    List<HotelDtoFilter> getTotalHotelsByLocation(String state);
+    List<HotelDtoFilter> getTotalHotelsByLocation(Location location);
 
 
     List<RoomResponse> filterByPriceAndLocation(BigDecimal bigDecimal, BigDecimal bigDecimal1, Location location);
@@ -55,9 +55,9 @@ public interface AdminService {
 
     List<RoomResponse> findAllRoomsByHotelId(long roomId);
 
-    String deleteRoomById(long roomId);
+    DeleteRoomResponse deleteRoomById(long roomId);
 
-    String editRoomById(long l, RoomRequest roomRequest);
+    EditRoomResponse editRoomById(long l, RoomRequest roomRequest);
 
     List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId);
     List<RoomResponse> getAllRooms ();
