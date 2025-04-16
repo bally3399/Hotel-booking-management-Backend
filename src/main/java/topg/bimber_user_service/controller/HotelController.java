@@ -30,8 +30,10 @@ public class HotelController {
         return ResponseEntity.status(201).body(new BaseResponse<>(true,response));
     }
 
+
+
     @GetMapping("/location/{location}")
-    public ResponseEntity<?> getHotelsByLocation(@PathVariable Location location) {
+    public ResponseEntity<?> getHotelsByLocation(@PathVariable("location") Location location) {
             List<HotelDtoFilter> hotels = hotelServiceImpl.getHotelsByLocation(location);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,hotels));
     }
@@ -57,7 +59,7 @@ public class HotelController {
     }
 
  @GetMapping("/hotels/")
-    public ResponseEntity<?> getHotelByName() {
+    public ResponseEntity<?> getHotels() {
             var hotels = hotelServiceImpl.getAllHotels();
             return ResponseEntity.status(200).body(new BaseResponse<>(true,hotels));
     }
