@@ -37,7 +37,7 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public RoomResponse createRoom(RoomRequest roomRequest) {
-        Hotel hotel = hotelRepository.findById(roomRequest.getHotelId())
+        Hotel hotel = hotelRepository.findByName(roomRequest.getHotelName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
 
         Room room = Room.builder()
