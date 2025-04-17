@@ -179,7 +179,7 @@ public class AdminServiceImplTest {
         roomRequest.setRoomType(RoomType.SUITE);
         roomRequest.setPrice(new BigDecimal("75000"));
         roomRequest.setIsAvailable(false);
-        roomRequest.setHotelId(1L);
+        roomRequest.setHotelName("Grand Royale");
 
         EditRoomResponse response = adminService.editRoomById(1L, roomRequest);
         assertNotNull(response);

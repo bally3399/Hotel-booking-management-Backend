@@ -48,7 +48,7 @@ class RoomServiceImplTest {
         hotel = hotelRepository.save(hotel);
 
         RoomRequest request = new RoomRequest();
-        request.setHotelId(hotel.getId());
+        request.setHotelName(hotel.getName());
         request.setRoomType(RoomType.DELUXE);
         request.setPrice(new BigDecimal("50000.00"));
         request.setIsAvailable(true);
