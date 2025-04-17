@@ -35,6 +35,6 @@ public class RoomRequest {
       private RoomType roomType;
       private BigDecimal price;
       private Boolean isAvailable;
-      private Long hotelId;
+      private String hotelName;
       private List<String> pictures;
 }
