@@ -41,7 +41,6 @@ public class BookingController {
 
 
     @DeleteMapping("/cancel/{bookingId}")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> cancelBooking(@PathVariable Long bookingId, @RequestParam String userId) {
         try {
             String response = bookingServiceImpl.cancelBooking(bookingId, userId);
