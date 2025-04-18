@@ -18,12 +18,13 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class BookingRequestDto {
-    private RoomType roomType;
+    private String userId;
+    private Long hotelId;
+    private Long roomId;
     private LocalDateTime startDate;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using= LocalDateTimeSerializer.class)
     private LocalDateTime endDate;
-    private String hotelName;
 
 }
 

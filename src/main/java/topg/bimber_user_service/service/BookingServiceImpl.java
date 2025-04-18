@@ -47,24 +47,14 @@ public class BookingServiceImpl implements BookingService {
         if (request.getStartDate().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Start date cannot be in the past");
         }
-        if (request.getHotelName() == null || request.getHotelName().isBlank()) {
+        if (request.getHotelId() == null ) {
             throw new IllegalArgumentException("Hotel name is required");
         }
 
-        Hotel hotel = hotelRepository.findByName(request.getHotelName())
-                .orElseThrow(() -> new IllegalArgumentException("Hotel not found: " + request.getHotelName()));
+        Hotel hotel = hotelRepository.findById(request.getHotelId())
+                .orElseThrow(() -> new IllegalArgumentException("Hotel not found: " + request.getHotelId()));
 
-        List<Room> availableRooms = roomRepository.findAvailableRoomsByRoomTypeAndHotel(
-                request.getRoomType(),
-                hotel,
-                request.getStartDate(),
-                request.getEndDate()
-        );
-        if (availableRooms.isEmpty()) {
-            throw new IllegalArgumentException("No available rooms of type " + request.getRoomType() + " for the selected dates");
-        }
-
-        Room room = availableRooms.get(0);
+        Room room = roomRepository.findById(request.getRoomId()).orElseThrow(()-> new IllegalArgumentException("Room not Found"));
         room.setAvailable(false);
         roomRepository.save(room);
 
