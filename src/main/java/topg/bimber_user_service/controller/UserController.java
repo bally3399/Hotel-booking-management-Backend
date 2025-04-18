@@ -9,6 +9,7 @@ import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
 import topg.bimber_user_service.dto.requests.UserRequestDto;
 import topg.bimber_user_service.dto.responses.*;
+import topg.bimber_user_service.models.Booking;
 import topg.bimber_user_service.models.User;
 import topg.bimber_user_service.service.UserService;
 
@@ -68,7 +69,7 @@ public class UserController {
 
     @PostMapping("/bookings")
     public ResponseEntity<?> bookRoom(@RequestBody BookingRequestDto bookingRequest) {
-        BookingResponseDto response = userService.bookRoom(bookingRequest);
+        Booking response = userService.bookRoom(bookingRequest);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
 

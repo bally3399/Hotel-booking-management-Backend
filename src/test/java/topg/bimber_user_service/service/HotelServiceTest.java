@@ -17,9 +17,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static topg.bimber_user_service.models.Location.BELFAST;
 
 @SpringBootTest
-@Sql(scripts ={"/db/data.sql"} )
+@Sql(scripts = {"/db/data.sql"})
 @Slf4j
 class HotelServiceTest {
     @Autowired
@@ -27,65 +28,89 @@ class HotelServiceTest {
     private CreateHotelDto createHotelDto;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         createHotelDto = CreateHotelDto.builder()
-                .name("mike")
-                .amenities(List.of("Gym", "club house", "pool"))
-                .description("description")
-                .pictures(List.of("picture1", "picture2","picture3"))
-               .location(Location.BELFAST)
+                .name("Mike Hotel")
+                .amenities(List.of("Gym", "Club House", "Pool"))
+                .description("A luxurious hotel in Belfast")
+                .pictures(List.of("picture1.jpg", "picture2.jpg", "picture3.jpg"))
+                .location(BELFAST)
                 .build();
-
     }
 
     @Test
     void createHotel() {
-        var response = hotelService.createHotel(createHotelDto);
+        HotelResponseDto response = hotelService.createHotel(createHotelDto);
         assertNotNull(response);
+        assertNotNull(response.hotel().id());
+        assertEquals("Mike Hotel", response.hotel().name());
+        assertEquals(BELFAST, response.hotel().location());
+        assertEquals("A luxurious hotel in Belfast", response.hotel().description());
+        assertThat(response.hotel().amenities()).containsExactly("Gym", "Club House", "Pool");
+        assertThat(response.hotel().pictures()).containsExactly("picture1.jpg", "picture2.jpg", "picture3.jpg");
+        log.info("Created hotel: {}", response);
     }
 
     @Test
     void getHotelsByLocation() {
-        List<HotelDtoFilter> response = hotelService.getHotelsByLocation(Location.BELFAST);
+        List<HotelDtoFilter> response = hotelService.getHotelsByLocation(BELFAST);
         assertNotNull(response);
         assertThat(response.size()).isEqualTo(1);
+        assertEquals("Sunset Sands", response.get(0).name());
+        assertEquals(BELFAST, response.get(0).location());
+        log.info("Hotels in Belfast: {}", response);
     }
 
     @Test
     void editHotelById() {
-        HotelRequestDto dto =HotelRequestDto.builder()
-                .name("newName")
-                .description("description")
+        HotelRequestDto dto = HotelRequestDto.builder()
+                .name("New Sunset Sands")
+                .description("Updated description")
                 .build();
-        HotelResponseDto response = hotelService.editHotelById(1L,dto);
+        HotelResponseDto response = hotelService.editHotelById(2L, dto);
         assertNotNull(response);
-        assertThat(response.hotel().description()).isEqualTo("description");
+        assertEquals("New Sunset Sands", response.hotel().name());
+        assertEquals("Updated description", response.hotel().description());
+        log.info("Updated hotel: {}", response);
     }
 
     @Test
     void getHotelById() {
         HotelDtoFilter response = hotelService.getHotelById(1L);
         assertNotNull(response);
-        assertThat(response.description()).isEqualTo("Granite City in the northeast, oil industry hub.");
-
+        assertEquals("Grand Royale", response.name());
+        assertEquals("Granite City in the northeast, oil industry hub.", response.description());
+        assertEquals(Location.ABERDEEN, response.location());
+        log.info("Hotel by ID: {}", response);
     }
 
     @Test
-    void deleteHotelById() {
-        var response = hotelService.deleteHotelById(1L);
-        assertThrows(InvalidUserInputException.class,()-> hotelService.deleteHotelById(1L));
+    void deleteHotelByName() {
+        // Create a hotel to delete
+        HotelResponseDto created = hotelService.createHotel(createHotelDto);
+        String hotelName = created.hotel().name();
+
+        hotelService.deleteHotelByName(hotelName);
+
+        assertThrows(InvalidUserInputException.class, () -> hotelService.getHotelByName(hotelName));
+        log.info("Deleted hotel: {}", hotelName);
     }
 
     @Test
     void getTotalHotelsByLocation() {
-        List<HotelDtoFilter> response  = hotelService.getTotalHotelsByLocation(Location.BELFAST);
+        List<HotelDtoFilter> response = hotelService.getTotalHotelsByLocation(BELFAST);
+        assertNotNull(response);
         assertThat(response.size()).isEqualTo(1);
-
+        assertEquals("Sunset Sands", response.get(0).name());
+        log.info("Total hotels in Belfast: {}", response);
     }
 
     @Test
     void getMostBookedHotelsByLocation() {
-        var response = hotelService.getMostBookedHotelsByLocation(Location.BELFAST);
+        List<HotelDtoFilter> response = hotelService.getMostBookedHotelsByLocation(BELFAST);
+        assertNotNull(response);
         assertThat(response.size()).isEqualTo(1);
+        assertEquals("Sunset Sands", response.get(0).name());
+        log.info("Most booked hotels in Belfast: {}", response);
     }
 }

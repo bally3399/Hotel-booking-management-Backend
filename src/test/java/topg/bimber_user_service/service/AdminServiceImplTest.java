@@ -159,8 +159,8 @@ public class AdminServiceImplTest {
     @Test
     @Transactional
     public void testThatAdminCanDeleteHotelById() {
-        adminService.deleteHotelById(1L);
-        Hotel deletedHotel = hotelRepository.findById(1L).orElse(null);
+        adminService.deleteHotelByName("Grand Royale");
+        Hotel deletedHotel = hotelRepository.findByName("Grand Royale").orElse(null);
         assertNull(deletedHotel);
     }
 

@@ -4,6 +4,7 @@ import topg.bimber_user_service.dto.requests.CreateHotelDto;
 import topg.bimber_user_service.dto.requests.HotelDtoFilter;
 import topg.bimber_user_service.dto.requests.HotelRequestDto;
 import topg.bimber_user_service.dto.responses.HotelResponseDto;
+import topg.bimber_user_service.models.Hotel;
 import topg.bimber_user_service.models.Location;
 
 import java.util.List;
@@ -15,8 +16,10 @@ public interface HotelService {
     HotelDtoFilter getHotelById(Long id);
     HotelDtoFilter findByName(String name);
     List<HotelDtoFilter> getAllHotels();
-    String deleteHotelById(Long id);
+    String deleteHotelByName(String name);
     List<HotelDtoFilter> getTotalHotelsByLocation(Location location);
 
     List<HotelDtoFilter> getMostBookedHotelsByLocation(Location location);
+
+    Hotel getHotelByName(String hotelName);
 }

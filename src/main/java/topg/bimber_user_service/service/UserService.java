@@ -4,6 +4,7 @@ import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
 import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.dto.requests.UserRequestDto;
+import topg.bimber_user_service.models.Booking;
 import topg.bimber_user_service.models.User;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ public interface UserService {
 
     List<UserResponseDto> getNumberOfUsers();
 
-    BookingResponseDto bookRoom(BookingRequestDto bookingRequest);
+    Booking bookRoom(BookingRequestDto bookingRequest);
 
     String cancelBooking(Long bookingId, String userId);
 

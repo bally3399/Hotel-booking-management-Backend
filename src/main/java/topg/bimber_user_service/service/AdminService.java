@@ -34,7 +34,7 @@ public interface AdminService {
 
     HotelDtoFilter getHotelById(Long id);
 
-    String deleteHotelById(Long id);
+    String deleteHotelByName(String name);
 
     List<HotelDtoFilter> getMostBookedHotelByLocation(Location location);
 
