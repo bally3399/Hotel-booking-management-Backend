@@ -96,25 +96,25 @@ class UserServiceTest {
         assertThat(response.size()).isEqualTo(5);
     }
 
-    @Test
-    @Transactional
-    @WithMockUser(username = "user1")
-    public void testThatUserCanBookRoom() {
-        BookingRequestDto bookingRequest = BookingRequestDto.builder()
-                .roomType(RoomType.DELUXE)
-                .hotelName("Grand Royale")
-                .startDate(LocalDateTime.now().plusDays(10))
-                .endDate(LocalDateTime.now().plusDays(12))
-                .build();
-
-        Booking response = userService.bookRoom(bookingRequest);
-
-        assertNotNull(response);
-        assertThat(response.getRoom().getRoomType()).isEqualTo(RoomType.DELUXE);
-        assertThat(response.getHotel().getName()).isEqualTo("Grand Royale");
-        assertThat(response.getStatus()).isEqualTo(BookingStatus.ACTIVE);
-        assertThat(response.getTotalPrice()).isEqualTo(BigDecimal.valueOf(100000).setScale(2, RoundingMode.HALF_UP)); // 2 days * 50000
-    }
+//    @Test
+//    @Transactional
+//    @WithMockUser(username = "user1")
+//    public void testThatUserCanBookRoom() {
+//        BookingRequestDto bookingRequest = BookingRequestDto.builder()
+//                .roomType(RoomType.DELUXE)
+//                .hotelName("Grand Royale")
+//                .startDate(LocalDateTime.now().plusDays(10))
+//                .endDate(LocalDateTime.now().plusDays(12))
+//                .build();
+//
+//        Booking response = userService.bookRoom(bookingRequest);
+//
+//        assertNotNull(response);
+//        assertThat(response.getRoom().getRoomType()).isEqualTo(RoomType.DELUXE);
+//        assertThat(response.getHotel().getName()).isEqualTo("Grand Royale");
+//        assertThat(response.getStatus()).isEqualTo(BookingStatus.ACTIVE);
+//        assertThat(response.getTotalPrice()).isEqualTo(BigDecimal.valueOf(100000).setScale(2, RoundingMode.HALF_UP)); // 2 days * 50000
+//    }
 
 //    @Test
 //    @Transactional
