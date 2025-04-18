@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class UserCreatedDto {
+    private String id;
     private String message;
     private String username;
     private String email;
