@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import topg.bimber_user_service.dto.requests.BookingRequestDto;
@@ -15,7 +17,6 @@ import topg.bimber_user_service.models.*;
 import topg.bimber_user_service.repository.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -37,32 +38,68 @@ public class BookingServiceImpl implements BookingService {
     private final MailService mailService;
     private static final Logger log = LoggerFactory.getLogger(BookingServiceImpl.class);
 
-    // Books a room for a user and processes payment.
-    @Transactional
     @Override
-    public BookingResponseDto bookRoom(BookingRequestDto bookingRequestDto) {
-        User user = getEntityOrThrow(() -> userRepository.findById(bookingRequestDto.getUserId()), "User not found");
-        Room room = getEntityOrThrow(() -> roomRepository.findById(bookingRequestDto.getRoomId()), "Room not found");
-        Hotel hotel = getEntityOrThrow(() -> hotelRepository.findById(bookingRequestDto.getHotelId()), "Hotel not found");
+    @Transactional
+    public Booking bookRoom(BookingRequestDto request) {
+        if (request.getStartDate().isAfter(request.getEndDate())) {
+            throw new IllegalArgumentException("Start date must be before end date");
+        }
+        if (request.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Start date cannot be in the past");
+        }
+        if (request.getHotelName() == null || request.getHotelName().isBlank()) {
+            throw new IllegalArgumentException("Hotel name is required");
+        }
 
-        validateBookingConditions(user, room, bookingRequestDto);
+        Hotel hotel = hotelRepository.findByName(request.getHotelName())
+                .orElseThrow(() -> new IllegalArgumentException("Hotel not found: " + request.getHotelName()));
 
-        BigDecimal totalPrice = calculateTotalPrice(room.getPrice(), bookingRequestDto.getStartDate(), bookingRequestDto.getEndDate());
+        List<Room> availableRooms = roomRepository.findAvailableRoomsByRoomTypeAndHotel(
+                request.getRoomType(),
+                hotel,
+                request.getStartDate(),
+                request.getEndDate()
+        );
+        if (availableRooms.isEmpty()) {
+            throw new IllegalArgumentException("No available rooms of type " + request.getRoomType() + " for the selected dates");
+        }
 
-        user.setBalance(user.getBalance().subtract(totalPrice));
-
-        Booking booking = createBooking(user, room, hotel, bookingRequestDto, totalPrice);
-
-        createPayment(user, totalPrice, booking.getId());
-
+        Room room = availableRooms.get(0);
         room.setAvailable(false);
         roomRepository.save(room);
 
-        scheduleRoomAvailabilityReset(room, bookingRequestDto.getEndDate());
+        User user = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        sendConfirmationEmail(user, room, booking);
+        long days = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate());
+        BigDecimal totalPrice = room.getPrice().multiply(BigDecimal.valueOf(days > 0 ? days : 1));
 
-        return buildBookingResponseDto(booking);
+        Booking booking = Booking.builder()
+                .user(user)
+                .room(room)
+                .hotel(hotel)
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
+                .status(BookingStatus.ACTIVE)
+                .isPaid(false)
+                .totalPrice(totalPrice)
+                .build();
+
+        return bookingRepository.save(booking);
+    }
+    @Scheduled(cron = "0 0 * * * *")
+    @Transactional
+    @Override
+    public void updateExpiredBookings() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Booking> expiredBookings = bookingRepository.findExpiredBookings(now);
+        for (Booking booking : expiredBookings) {
+            booking.setStatus(BookingStatus.EXPIRED);
+            Room room = booking.getRoom();
+            room.setAvailable(true);
+            roomRepository.save(room);
+            bookingRepository.save(booking);
+        }
     }
 
     private void validateBookingConditions(User user, Room room, BookingRequestDto bookingRequestDto) {
@@ -81,9 +118,9 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalStateException("End date cannot be before start date");
         }
 
-        if (bookingRepository.existsByUserIdAndHotelIdAndStatus(user.getId(), bookingRequestDto.getHotelId(), BookingStatus.CONFIRMED)) {
-            throw new IllegalStateException("You already have an active booking for this hotel");
-        }
+//        if (bookingRepository.existsByUserIdAndHotelIdAndStatus(user.getId(), bookingRequestDto.getHotelId(), BookingStatus.CONFIRMED)) {
+//            throw new IllegalStateException("You already have an active booking for this hotel");
+//        }
 
 //        if (bookingRepository.existsByRoomIdAndDatesOverlap(room.getId(), startDate, endDate)) {
 //            throw new IllegalStateException("Room is already booked for the selected dates");
@@ -99,19 +136,19 @@ public class BookingServiceImpl implements BookingService {
         return pricePerNight.multiply(BigDecimal.valueOf(numberOfDays));
     }
 
-    private Booking createBooking(User user, Room room, Hotel hotel, BookingRequestDto bookingRequestDto, BigDecimal totalPrice) {
-        Booking booking = Booking.builder()
-                .user(user)
-                .room(room)
-                .hotel(hotel)
-                .startDate(bookingRequestDto.getStartDate())
-                .endDate(bookingRequestDto.getEndDate())
-                .status(BookingStatus.CONFIRMED)
-                .isPaid(true)
-                .totalPrice(totalPrice)
-                .build();
-        return bookingRepository.save(booking);
-    }
+//    private Booking createBooking(User user, Room room, Hotel hotel, BookingRequestDto bookingRequestDto, BigDecimal totalPrice) {
+//        Booking booking = Booking.builder()
+//                .user(user)
+//                .room(room)
+//                .hotel(hotel)
+//                .startDate(bookingRequestDto.getStartDate())
+//                .endDate(bookingRequestDto.getEndDate())
+//                .status(BookingStatus.CONFIRMED)
+//                .isPaid(true)
+//                .totalPrice(totalPrice)
+//                .build();
+//        return bookingRepository.save(booking);
+//    }
 
     private void createPayment(User user, BigDecimal amount, Long bookingId) {
         Payment payment = Payment.builder()
@@ -276,13 +313,12 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new UserNotFoundInDb("Booking not found"));
 
-        Room room = roomRepository.findById(bookingRequestDto.getRoomId())
-                .orElseThrow(() -> new UserNotFoundInDb("Room not found"));
+//        Room room = roomRepository.findById(bookingRequestDto.getRoomId())
+//                .orElseThrow(() -> new UserNotFoundInDb("Room not found"));
 
-        booking.setRoom(room);
+//        booking.setRoom(room);
         booking.setStartDate(bookingRequestDto.getStartDate());
         booking.setEndDate(bookingRequestDto.getEndDate());
-        booking.setPaid(Boolean.TRUE.equals(bookingRequestDto.getIsPaid()));
 
         booking = bookingRepository.save(booking);
 
@@ -297,7 +333,6 @@ public class BookingServiceImpl implements BookingService {
         );
     }
 
-    // Retrieves all bookings.
     @Override
     public List<BookingResponseDto> listAllBookings() {
         List<Booking> bookings = bookingRepository.findAll();

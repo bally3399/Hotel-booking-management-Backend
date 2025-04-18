@@ -83,10 +83,10 @@ public class AdminController {
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 
-    @DeleteMapping("/hotels/{id}")
+    @DeleteMapping("/hotels/{name}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteHotelById(@PathVariable Long id) {
-        String response = adminServiceImpl.deleteHotelById(id);
+    public ResponseEntity<?> deleteHotelById(@PathVariable String name) {
+        String response = adminServiceImpl.deleteHotelByName(name);
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
 
     }

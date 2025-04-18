@@ -9,6 +9,7 @@ import topg.bimber_user_service.dto.requests.UserAndAdminUpdateDto;
 import topg.bimber_user_service.dto.requests.UserRequestDto;
 import topg.bimber_user_service.dto.responses.*;
 import topg.bimber_user_service.exceptions.UserNotFoundException;
+import topg.bimber_user_service.models.Booking;
 import topg.bimber_user_service.models.User;
 import topg.bimber_user_service.repository.UserRepository;
 
@@ -86,7 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BookingResponseDto bookRoom(BookingRequestDto bookingRequest) {
+    public Booking bookRoom(BookingRequestDto bookingRequest) {
         return bookingService.bookRoom(bookingRequest);
     }
 

@@ -20,4 +20,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "GROUP BY h.id " +
             "ORDER BY COUNT(b.id) DESC")
     List<Hotel> findMostBookedHotelsByLocation(Location location);
+
+    void deleteByName(String name);
+
 }

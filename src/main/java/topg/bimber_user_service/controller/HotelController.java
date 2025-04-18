@@ -78,10 +78,10 @@ public class HotelController {
             return ResponseEntity.status(200).body(new BaseResponse<>(true,hotels));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{name}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> deleteHotel(@PathVariable("id") Long id) {
-            String message = hotelServiceImpl.deleteHotelById(id);
+    public ResponseEntity<?> deleteHotel(@PathVariable("name") String name) {
+            String message = hotelServiceImpl.deleteHotelByName(name);
             return ResponseEntity.status(200).body(new BaseResponse<>(true,message));
     }
     

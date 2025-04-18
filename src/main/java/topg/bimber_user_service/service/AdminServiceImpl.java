@@ -147,8 +147,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String deleteHotelById(Long id) {
-        return hotelServiceImpl.deleteHotelById(id);
+    public String deleteHotelByName(String name) {
+        return hotelServiceImpl.deleteHotelByName(name);
     }
 
 

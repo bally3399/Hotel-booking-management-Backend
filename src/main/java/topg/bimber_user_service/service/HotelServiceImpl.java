@@ -142,11 +142,12 @@ public class HotelServiceImpl implements HotelService {
 
 
     @Override
-    public String deleteHotelById(Long id) {
-        Hotel hotel = hotelRepository.findById(id)
-                .orElseThrow(() -> new InvalidUserInputException("Id not found"));
+    @Transactional
+    public String deleteHotelByName(String name) {
+        Hotel hotel = hotelRepository.findByName(name)
+                .orElseThrow(() -> new InvalidUserInputException("Hotel is not found"));
 
-        hotelRepository.deleteById(id);
+        hotelRepository.deleteByName(name);
         return hotel.getName() + " located at " + hotel.getLocation() + " has been deleted";
     }
 
@@ -178,6 +179,13 @@ public class HotelServiceImpl implements HotelService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Hotel getHotelByName(String hotelName) {
+        return hotelRepository.findByName(hotelName)
+                .orElseThrow(() -> new InvalidUserInputException("Hotel not found"));
+
     }
 
 

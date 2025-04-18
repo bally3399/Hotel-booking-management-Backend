@@ -10,6 +10,7 @@ import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.responses.BookingResponseDto;
 import topg.bimber_user_service.exceptions.ErrorResponse;
 import topg.bimber_user_service.exceptions.SuccessResponse;
+import topg.bimber_user_service.models.Booking;
 import topg.bimber_user_service.service.BookingServiceImpl;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class BookingController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> bookRoom(@RequestBody BookingRequestDto bookingRequestDto) {
         try {
-            BookingResponseDto response = bookingServiceImpl.bookRoom(bookingRequestDto);
+            Booking response = bookingServiceImpl.bookRoom(bookingRequestDto);
             return ResponseEntity.ok(response);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

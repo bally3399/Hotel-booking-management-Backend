@@ -7,6 +7,8 @@ import topg.bimber_user_service.models.Booking;
 import topg.bimber_user_service.models.BookingStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -22,4 +24,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 //                                          @Param("endDate") LocalDate endDate);
 
     Optional<Booking> findByUserIdAndHotelId(String userId, Long hotelId);
+
+    @Query("SELECT b FROM Booking b WHERE b.status = 'ACTIVE' AND b.endDate < :now")
+    List<Booking> findExpiredBookings(@Param("now") LocalDateTime now);
 }
