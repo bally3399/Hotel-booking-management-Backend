@@ -22,7 +22,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if(passwordEncoder.matches(password,userDetails.getPassword())){
-            Authentication authenticationResult = new UsernamePasswordAuthenticationToken(null,null,userDetails.getAuthorities());
+            Authentication authenticationResult = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
             return authenticationResult;
         }
         throw new BadCredentialsException("please supply valid credentials");
