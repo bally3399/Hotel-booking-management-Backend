@@ -21,7 +21,9 @@ import topg.bimber_user_service.dto.requests.LoginRequest;
 import topg.bimber_user_service.dto.responses.BaseResponse;
 import topg.bimber_user_service.dto.responses.LoginResponse;
 import topg.bimber_user_service.dto.responses.UserResponseDto;
+import topg.bimber_user_service.models.Admin;
 import topg.bimber_user_service.models.User;
+import topg.bimber_user_service.repository.AdminRepository;
 import topg.bimber_user_service.repository.UserRepository;
 
 import java.io.IOException;
@@ -36,6 +38,7 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
     private final ModelMapper mapper;
 
     @Override
@@ -55,33 +58,46 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String token = generateAccessToken(authResult);
-        Object principal = authResult.getPrincipal();
-        System.out.println("Principal class: " + principal.getClass());
-        System.out.println("Principal: " + principal.toString());
-        String email = authResult.getName();
-        System.out.println("this is the email:" + email);
+        String email = authResult.getName(); // Extract the email from the Authentication object
+
+        // Try to find the user in the UserRepository
         Optional<User> optionalUser = userRepository.findByUsername(email);
 
         if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-
-            LoginResponse loginResponse = new LoginResponse();
-            loginResponse.setJwtToken(token);
-            loginResponse.setMessage("Successful Authentication");
-           loginResponse.setUser(mapper.map(user, UserResponseDto.class));
-
-            // Wrap the LoginResponse in a BaseResponse
-            BaseResponse<LoginResponse> authResponse = new BaseResponse<>(true, loginResponse);
-            authResponse.setData(loginResponse);
-
-            // Write the response as JSON
-            response.setContentType("application/json");
-            response.setStatus(HttpStatus.OK.value());
-            response.getOutputStream().write(objectMapper.writeValueAsBytes(authResponse));
-            response.getOutputStream().flush();
-        } else {
-            throw new RuntimeException("User not found for email: " + email);
+            handleSuccessfulLogin(response, token, optionalUser.get());
+            return;
         }
+
+        // If not found in UserRepository, try AdminRepository
+        Optional<Admin> optionalAdmin = adminRepository.findByUsername(email);
+
+        if (optionalAdmin.isPresent()) {
+            handleSuccessfulLogin(response, token, optionalAdmin.get());
+            return;
+        }
+
+        // If neither User nor Admin is found, throw an exception
+        throw new RuntimeException("User or Admin not found for email: " + email);
+    }
+
+    private void handleSuccessfulLogin(HttpServletResponse response, String token, Object entity) throws IOException {
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setJwtToken(token);
+        loginResponse.setMessage("Successful Authentication");
+
+        // Map the entity (User or Admin) to UserResponseDto
+        UserResponseDto userResponseDto = mapper.map(entity, UserResponseDto.class);
+        loginResponse.setUser(userResponseDto);
+
+        // Wrap the LoginResponse in a BaseResponse
+        BaseResponse<LoginResponse> authResponse = new BaseResponse<>(true, loginResponse);
+        authResponse.setData(loginResponse);
+
+        // Write the response as JSON
+        response.setContentType("application/json");
+        response.setStatus(HttpStatus.OK.value());
+        response.getOutputStream().write(objectMapper.writeValueAsBytes(authResponse));
+        response.getOutputStream().flush();
     }
 
     private static String generateAccessToken(Authentication authResult) {
