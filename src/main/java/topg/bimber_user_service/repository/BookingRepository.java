@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import topg.bimber_user_service.models.Booking;
 import topg.bimber_user_service.models.BookingStatus;
+import topg.bimber_user_service.models.Room;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,4 +28,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b WHERE b.status = 'ACTIVE' AND b.endDate < :now")
     List<Booking> findExpiredBookings(@Param("now") LocalDateTime now);
+    @Query("SELECT b FROM Booking  b WHERE b.user.id=:userId")
+    List<Booking> findBookingsByUserId(String userId);
 }

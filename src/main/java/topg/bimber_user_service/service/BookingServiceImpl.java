@@ -338,4 +338,20 @@ public class BookingServiceImpl implements BookingService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<BookingResponseDto> getUserBookings(String userId) {
+        List<Booking> bookings = bookingRepository.findBookingsByUserId(userId);
+        return bookings.stream()
+                .map(booking -> new BookingResponseDto(
+                        booking.getId(),
+                        booking.getUser().getId(),
+                        booking.getRoom().getId(),
+                        booking.getStartDate(),
+                        booking.getEndDate(),
+                        booking.getStatus().name(),
+                        booking.isPaid()
+                ))
+                .collect(Collectors.toList());
+    }
 }
