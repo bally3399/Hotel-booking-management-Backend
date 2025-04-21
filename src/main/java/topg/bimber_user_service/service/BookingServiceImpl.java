@@ -324,6 +324,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public BookingResponseDto findBookingByRoomId(Long roomId) {
+        Booking booking = bookingRepository.findByRoomId(roomId);
+        return  new BookingResponseDto(
+                booking.getId(),
+                booking.getUser().getId(),
+                booking.getRoom().getId(),
+                booking.getStartDate(),
+                booking.getEndDate(),
+                booking.getStatus().name(),
+                booking.isPaid()
+        );
+    }
+
+    @Override
     public List<BookingResponseDto> listAllBookings() {
         List<Booking> bookings = bookingRepository.findAll();
         return bookings.stream()

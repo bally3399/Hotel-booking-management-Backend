@@ -45,6 +45,11 @@ public class BookingController {
         var response  = bookingServiceImpl.getUserBookings(userId);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
     }
+    @GetMapping("/room/{roomId}")
+    public ResponseEntity<?> getUserBookings(@PathVariable("roomId") Long roomId){
+        var response  = bookingServiceImpl.findBookingByRoomId(roomId);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
+    }
 
 
     @DeleteMapping("/cancel/{bookingId}")

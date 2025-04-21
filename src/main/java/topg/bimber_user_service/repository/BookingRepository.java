@@ -30,4 +30,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findExpiredBookings(@Param("now") LocalDateTime now);
     @Query("SELECT b FROM Booking  b WHERE b.user.id=:userId")
     List<Booking> findBookingsByUserId(String userId);
+    @Query("SELECT b FROM Booking  b WHERE b.room.id=:roomId")
+    Booking findByRoomId(Long roomId);
 }
