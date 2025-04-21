@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface RoomService {
     RoomResponse createRoom(RoomRequest roomRequest);
+    RoomResponse getRoom(Long id);
     EditRoomResponse editRoomById(Long id, RoomRequest roomRequest);
     DeleteRoomResponse deleteRoomById(Long id);
     List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId);
