@@ -14,5 +14,5 @@ import java.math.BigDecimal;
 public class UserResponseDto{
        private String email;
        private String username;
-       private String userId;
+       private String id;
 }

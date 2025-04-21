@@ -55,9 +55,12 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String token = generateAccessToken(authResult);
-
+        Object principal = authResult.getPrincipal();
+        System.out.println("Principal class: " + principal.getClass());
+        System.out.println("Principal: " + principal.toString());
         String email = authResult.getName();
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        System.out.println("this is the email:" + email);
+        Optional<User> optionalUser = userRepository.findByUsername(email);
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
