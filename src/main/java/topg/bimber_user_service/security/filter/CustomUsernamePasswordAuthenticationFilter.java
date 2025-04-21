@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,17 +20,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import topg.bimber_user_service.dto.requests.LoginRequest;
 import topg.bimber_user_service.dto.responses.BaseResponse;
 import topg.bimber_user_service.dto.responses.LoginResponse;
+import topg.bimber_user_service.dto.responses.UserResponseDto;
+import topg.bimber_user_service.models.User;
+import topg.bimber_user_service.repository.UserRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class CustomUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final UserRepository userRepository;
+    private final ModelMapper mapper;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -49,17 +56,29 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String token = generateAccessToken(authResult);
 
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setJwtToken(token);
-        loginResponse.setMessage("Successful Authentication");
-        BaseResponse<LoginResponse> authResponse = new BaseResponse<>(true, loginResponse);
-        authResponse.setData(loginResponse);
+        String email = authResult.getName();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        response.setContentType("application/json");
-        response.setStatus(HttpStatus.OK.value());
-        response.getOutputStream().write(objectMapper.writeValueAsBytes(authResponse));
-        response.getOutputStream().flush();
-        // Do NOT call chain.doFilter here to terminate the request
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setJwtToken(token);
+            loginResponse.setMessage("Successful Authentication");
+           loginResponse.setUser(mapper.map(user, UserResponseDto.class));
+
+            // Wrap the LoginResponse in a BaseResponse
+            BaseResponse<LoginResponse> authResponse = new BaseResponse<>(true, loginResponse);
+            authResponse.setData(loginResponse);
+
+            // Write the response as JSON
+            response.setContentType("application/json");
+            response.setStatus(HttpStatus.OK.value());
+            response.getOutputStream().write(objectMapper.writeValueAsBytes(authResponse));
+            response.getOutputStream().flush();
+        } else {
+            throw new RuntimeException("User not found for email: " + email);
+        }
     }
 
     private static String generateAccessToken(Authentication authResult) {
