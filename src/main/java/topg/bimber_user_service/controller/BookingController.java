@@ -40,7 +40,7 @@ public class BookingController {
         }
     }
 
-    @GetMapping("/bookings/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<?> getUserBookings(@PathVariable("userId") String userId){
         var response  = bookingServiceImpl.getUserBookings(userId);
         return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
