@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import topg.bimber_user_service.dto.requests.BookingRequestDto;
 import topg.bimber_user_service.dto.responses.BookingResponseDto;
+import topg.bimber_user_service.exceptions.UserNotFoundException;
 import topg.bimber_user_service.exceptions.UserNotFoundInDb;
 import topg.bimber_user_service.mail.MailService;
 import topg.bimber_user_service.models.*;
@@ -58,8 +59,7 @@ public class BookingServiceImpl implements BookingService {
         room.setAvailable(false);
         roomRepository.save(room);
 
-        User user = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(request.getUserId()).orElseThrow(()-> new UserNotFoundException("User Not Found"));
 
         long days = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate());
         BigDecimal totalPrice = room.getPrice().multiply(BigDecimal.valueOf(days > 0 ? days : 1));
