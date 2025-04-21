@@ -2,6 +2,7 @@ package topg.bimber_user_service.security.config;
 
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import topg.bimber_user_service.repository.UserRepository;
 import topg.bimber_user_service.security.filter.CustomAuthorizationFilter;
 import topg.bimber_user_service.security.filter.CustomUsernamePasswordAuthenticationFilter;
 
@@ -21,6 +23,8 @@ import java.util.List;
 public class SecurityConfig {
     private final AuthenticationManager authenticationManager;
     private final CustomAuthorizationFilter customAuthorizationFilter;
+    private final UserRepository userRepository;
+    private final ModelMapper mapper;
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 //        var authenticationFilter = new CustomUsernamePasswordAuthenticationFilter(authenticationManager);
@@ -43,7 +47,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        var authenticationFilter = new CustomUsernamePasswordAuthenticationFilter(authenticationManager);
+        var authenticationFilter = new CustomUsernamePasswordAuthenticationFilter(authenticationManager,userRepository,mapper);
         authenticationFilter.setFilterProcessesUrl("/api/v1/auth");
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
