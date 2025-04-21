@@ -241,7 +241,16 @@ public class RoomServiceImpl implements RoomService {
                 .collect(Collectors.toList());
     }
 
-
-
-
+    @Override
+    public RoomResponse getRoom(Long id) {
+        Room room = roomRepository.findById(id).orElseThrow(()-> new IllegalStateException("Room Not Found"));
+        return  new RoomResponse(
+                room.getId(),
+                room.getHotel().getId(),
+                room.getRoomType(),
+                room.getPrice(),
+                room.isAvailable(),
+                room.getPictures()
+        );
+    }
 }

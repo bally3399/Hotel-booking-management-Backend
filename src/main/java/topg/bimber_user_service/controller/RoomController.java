@@ -66,6 +66,11 @@ public class RoomController {
         List<RoomResponse> rooms = roomServiceImpl.getAllRooms();
         return ResponseEntity.ok(rooms);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getRoom(@PathVariable("id") Long id) {
+        var rooms = roomServiceImpl.getRoom(id);
+        return ResponseEntity.ok(rooms);
+    }
 
     @GetMapping("/hotel/{hotelId}/available")
     public ResponseEntity<?> findAllAvailableHotelRooms(@PathVariable Long hotelId) {
