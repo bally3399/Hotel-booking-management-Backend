@@ -19,7 +19,7 @@ public interface BookingService {
     String cancelBooking(Long bookingId, String userId);
 
     BookingResponseDto updateBooking(Long bookingId, BookingRequestDto bookingRequestDto);
-
+    BookingResponseDto findBookingByRoomId(Long roomId);
     List<BookingResponseDto> listAllBookings();
     List<BookingResponseDto> getUserBookings(String UserId);
 
