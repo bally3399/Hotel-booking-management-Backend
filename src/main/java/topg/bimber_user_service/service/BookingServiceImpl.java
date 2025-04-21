@@ -325,7 +325,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto findBookingByRoomId(Long roomId) {
-        Booking booking = bookingRepository.findByRoomId(roomId);
+        Booking booking = bookingRepository.findByRoomId(roomId).orElseThrow(()-> new IllegalArgumentException("Booking not found"));
         return  new BookingResponseDto(
                 booking.getId(),
                 booking.getUser().getId(),
