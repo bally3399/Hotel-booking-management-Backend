@@ -53,6 +53,7 @@ public class RoomServiceImpl implements RoomService {
         return new RoomResponse
                 (
                         savedRoom.getId(),
+                        savedRoom.getHotel().getId(),
                         savedRoom.getRoomType(),
                         savedRoom.getPrice(),
                         savedRoom.isAvailable(),
@@ -106,6 +107,7 @@ public class RoomServiceImpl implements RoomService {
 
         return rooms.stream().map(room -> new NewRoomResponse(
                 room.getId(),
+                room.getHotel().getId(),
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
@@ -127,6 +129,7 @@ public class RoomServiceImpl implements RoomService {
 
         return rooms.stream().map(room -> new RoomResponse(
                 room.getId(),
+                room.getHotel().getId(),
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
@@ -143,6 +146,7 @@ public class RoomServiceImpl implements RoomService {
 
         return availableRooms.stream().map(room -> new RoomResponse(
                 room.getId(),
+                room.getHotel().getId(),
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
@@ -164,6 +168,7 @@ public class RoomServiceImpl implements RoomService {
 
         return new RoomResponse(
                 updatedRoom.getId(),
+                updatedRoom.getHotel().getId(),
                 updatedRoom.getRoomType(),
                 updatedRoom.getPrice(),
                 updatedRoom.isAvailable(),
@@ -186,6 +191,7 @@ public class RoomServiceImpl implements RoomService {
 
         return new RoomResponse(
                 updatedRoom.getId(),
+                updatedRoom.getHotel().getId(),
                 updatedRoom.getRoomType(),
                 updatedRoom.getPrice(),
                 updatedRoom.isAvailable(),
@@ -209,6 +215,7 @@ public class RoomServiceImpl implements RoomService {
 
         return filteredRooms.stream().map(room -> new RoomResponse(
                 room.getId(),
+                room.getHotel().getId(),
                 room.getRoomType(),
                 room.getPrice(),
                 room.isAvailable(),
@@ -225,6 +232,7 @@ public class RoomServiceImpl implements RoomService {
                 .filter(room -> room.getHotel().getLocation() == location)
                 .map(room -> new RoomResponse(
                         room.getId(),
+                        room.getHotel().getId(),
                         room.getRoomType(),
                         room.getPrice(),
                         room.isAvailable(),

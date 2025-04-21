@@ -21,5 +21,6 @@ public interface BookingService {
     BookingResponseDto updateBooking(Long bookingId, BookingRequestDto bookingRequestDto);
 
     List<BookingResponseDto> listAllBookings();
+    List<BookingResponseDto> getUserBookings(String UserId);
 
 }

@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RoomResponse{
        private Long id;
+       private Long hotelId;
        private RoomType roomType;
        private BigDecimal price;
        private boolean isAvailable;

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import topg.bimber_user_service.dto.requests.BookingRequestDto;
+import topg.bimber_user_service.dto.responses.BaseResponse;
 import topg.bimber_user_service.dto.responses.BookingResponseDto;
 import topg.bimber_user_service.exceptions.ErrorResponse;
 import topg.bimber_user_service.exceptions.SuccessResponse;
@@ -39,9 +40,15 @@ public class BookingController {
         }
     }
 
+    @GetMapping("/bookings/{userId}")
+    public ResponseEntity<?> getUserBookings(@PathVariable("userId") String userId){
+        var response  = bookingServiceImpl.getUserBookings(userId);
+        return ResponseEntity.status(200).body(new BaseResponse<>(true,response));
+    }
+
 
     @DeleteMapping("/cancel/{bookingId}")
-    public ResponseEntity<?> cancelBooking(@PathVariable Long bookingId, @RequestParam String userId) {
+    public ResponseEntity<?> cancelBooking(@PathVariable("bookingId") Long bookingId, @RequestParam String userId) {
         try {
             String response = bookingServiceImpl.cancelBooking(bookingId, userId);
             return ResponseEntity.ok(new SuccessResponse("success", response));
