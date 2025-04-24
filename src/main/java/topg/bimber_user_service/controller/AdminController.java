@@ -76,7 +76,7 @@ public class AdminController {
         return ResponseEntity.status(200).body(new BaseResponse<>(true, response));
     }
 
-    @GetMapping("/hotels/name")
+    @PostMapping("/hotels/name")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getHotelByName(@RequestBody String name) {
         HotelDtoFilter response = adminServiceImpl.findByName(name);
