@@ -242,20 +242,21 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<NewRoomResponse> getAllAvailableRooms() {
+    public List<RoomResponse> getAllAvailableRooms() {
         return roomRepository.findByAvailableTrue()
                 .stream()
                 .map(this::mapToNewRoomResponse)
                 .collect(Collectors.toList());
     }
 
-    private NewRoomResponse mapToNewRoomResponse(Room room) {
-        NewRoomResponse response = new NewRoomResponse();
+    private RoomResponse mapToNewRoomResponse(Room room) {
+        RoomResponse response = new RoomResponse();
         response.setId(room.getId());
         response.setRoomType(room.getRoomType());
         response.setPrice(room.getPrice());
         response.setAvailable(room.isAvailable());
         response.setHotelId(room.getHotel().getId());
+        response.setPictureUrls(room.getPictures());
         return response;
     }
 
