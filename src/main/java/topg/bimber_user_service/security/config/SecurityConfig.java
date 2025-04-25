@@ -67,6 +67,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth").permitAll()
                         .requestMatchers("/api/v1/users/register").permitAll()
                         .requestMatchers("/api/v1/admin/register").permitAll()
+                        .requestMatchers("/api/v1/hotel/hotels/").permitAll()
                         .requestMatchers("/api/v1/users/**").hasAnyAuthority("USER")
                         .requestMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/api/v1/hotel/**").hasAnyAuthority("USER", "ADMIN")
