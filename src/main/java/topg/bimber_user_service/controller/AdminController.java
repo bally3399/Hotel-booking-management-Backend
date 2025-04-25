@@ -161,6 +161,13 @@ public class AdminController {
         return ResponseEntity.status(200).body(new BaseResponse<>(true, rooms));
     }
 
+    @GetMapping("/hotel/available")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> findAllAvailableRooms(){
+        List<NewRoomResponse> rooms = adminServiceImpl.getAllAvailableRooms();
+        return ResponseEntity.status(200).body(new BaseResponse<>(true, rooms));
+    }
+
     @GetMapping("/{roomId}/availability")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> isRoomAvailable(
