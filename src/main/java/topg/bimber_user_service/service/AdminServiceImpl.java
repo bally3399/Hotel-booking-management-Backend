@@ -213,7 +213,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<NewRoomResponse> getAllAvailableRooms() {
+    public List<RoomResponse> getAllAvailableRooms() {
         return roomServiceImpl.getAllAvailableRooms();
     }
 
