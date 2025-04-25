@@ -242,6 +242,24 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public List<NewRoomResponse> getAllAvailableRooms() {
+        return roomRepository.findByAvailableTrue()
+                .stream()
+                .map(this::mapToNewRoomResponse)
+                .collect(Collectors.toList());
+    }
+
+    private NewRoomResponse mapToNewRoomResponse(Room room) {
+        NewRoomResponse response = new NewRoomResponse();
+        response.setId(room.getId());
+        response.setRoomType(room.getRoomType());
+        response.setPrice(room.getPrice());
+        response.setAvailable(room.isAvailable());
+        response.setHotelId(room.getHotel().getId());
+        return response;
+    }
+
+    @Override
     public RoomResponse getRoom(Long id) {
         Room room = roomRepository.findById(id).orElseThrow(()-> new IllegalStateException("Room Not Found"));
         return  new RoomResponse(

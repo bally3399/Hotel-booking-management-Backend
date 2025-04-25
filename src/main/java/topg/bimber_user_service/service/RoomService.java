@@ -24,4 +24,5 @@ public interface RoomService {
     List<RoomResponse> filterHotelRoomByType(Long hotelId, String type);
     List<RoomResponse> filterByPriceAndLocation(BigDecimal minPrice, BigDecimal maxPrice, Location location);
 
+    List<NewRoomResponse> getAllAvailableRooms();
 }

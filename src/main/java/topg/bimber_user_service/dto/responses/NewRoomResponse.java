@@ -2,6 +2,7 @@ package topg.bimber_user_service.dto.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import topg.bimber_user_service.models.RoomType;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class NewRoomResponse {
     private Long id;
     private Long hotelId;
