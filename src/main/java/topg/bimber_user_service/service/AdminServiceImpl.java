@@ -213,6 +213,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public List<RoomResponse> getAllAvailableRooms() {
+        return roomServiceImpl.getAllAvailableRooms();
+    }
+
+    @Override
     public List<HotelDtoFilter> getMostBookedHotelByLocation(Location location) {
         return hotelServiceImpl.getMostBookedHotelsByLocation(location);
     }

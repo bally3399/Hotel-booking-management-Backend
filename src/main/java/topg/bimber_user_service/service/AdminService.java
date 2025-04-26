@@ -61,4 +61,5 @@ public interface AdminService {
 
     List<NewRoomResponse> findAllRoomsByHotelId(Long hotelId);
     List<RoomResponse> getAllRooms ();
+    List<RoomResponse> getAllAvailableRooms();
 }
