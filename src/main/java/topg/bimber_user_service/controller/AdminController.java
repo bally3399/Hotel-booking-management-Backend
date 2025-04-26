@@ -106,7 +106,7 @@ public class AdminController {
 
     }
 
-    @GetMapping("/")
+    @GetMapping("/get_all_rooms")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllRooms() {
         List<RoomResponse> response = adminServiceImpl.getAllRooms();
